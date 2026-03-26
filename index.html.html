@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENGV010 – Eksamen & Tentamen</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#14375e;--teal:#1a6b7c;--orange:#d4651a;--gold:#f0a500;--green:#2e7d53;--red:#b83232;--bg:#f5f3ef;--card:#ffffff;--text:#1e2830;--muted:#6b7280;--border:#e0dbd3;--shadow:0 2px 12px rgba(20,55,94,.10);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito','Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:16px;line-height:1.6;}
+body.rtl{direction:rtl;}
+.top-bar{background:var(--navy);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.top-bar-label{color:rgba(255,255,255,.6);font-size:12px;font-weight:700;text-transform:uppercase;white-space:nowrap;}
+.lang-bar{display:flex;flex-wrap:wrap;gap:6px;}
+.lang-btn{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);color:rgba(255,255,255,.80);padding:4px 11px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:all .2s;white-space:nowrap;}
+.lang-btn:hover{background:rgba(255,255,255,.20);color:#fff;}
+.lang-btn.active{background:var(--gold);border-color:var(--gold);color:var(--navy);}
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--teal) 100%);padding:32px 20px 24px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(240,165,0,.12);border-radius:50%;}
+.hero-badge{display:inline-block;background:var(--gold);color:var(--navy);font-weight:800;font-size:13px;padding:4px 14px;border-radius:20px;letter-spacing:.04em;margin-bottom:10px;}
+.hero h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(20px,5vw,30px);color:#fff;margin-bottom:6px;position:relative;z-index:1;}
+.hero p{color:rgba(255,255,255,.80);font-size:14px;max-width:600px;margin:0 auto;position:relative;z-index:1;}
+.tabs-wrap{background:var(--card);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none;max-width:980px;margin:0 auto;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab-btn{background:none;border:none;padding:12px 14px;font-family:inherit;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
+.tab-btn:hover{color:var(--navy);}
+.tab-btn.active{color:var(--navy);border-bottom-color:var(--orange);}
+.content{max-width:980px;margin:0 auto;padding:22px 16px 60px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.section-heading{font-size:19px;font-weight:800;color:var(--navy);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border);}
+.card{background:var(--card);border-radius:14px;padding:22px;margin-bottom:14px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;}
+.ov-item{background:var(--bg);border-radius:10px;padding:14px 10px;text-align:center;border:1px solid var(--border);}
+.ov-num{font-size:20px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:3px;}
+.ov-label{font-size:11px;color:var(--muted);font-weight:700;}
+.part-card{background:var(--card);border-radius:14px;padding:18px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border);border-left:5px solid var(--teal);display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;}
+.part-card.p2{border-left-color:var(--orange);}
+.part-card.p3{border-left-color:var(--gold);}
+.part-title{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.part-desc{font-size:13px;color:#445;line-height:1.65;}
+.part-desc ul{margin:8px 0 0 18px;}
+.part-desc ul li{margin-bottom:4px;}
+.part-desc ul ul{margin-top:4px;}
+.part-meta{text-align:right;}
+.part-weight{display:inline-block;background:var(--navy);color:#fff;font-weight:800;font-size:16px;padding:5px 12px;border-radius:8px;margin-bottom:3px;}
+.part-time{font-size:11px;color:var(--muted);font-weight:700;}
+@media(max-width:560px){.part-card{grid-template-columns:1fr;}.part-meta{text-align:left;}}
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;}
+@media(max-width:560px){.rules-grid{grid-template-columns:1fr;}}
+.rule-box{border-radius:12px;padding:16px;border:1px solid var(--border);}
+.rule-box.allowed{background:#f0faf4;border-color:#a8d5b8;}
+.rule-box.not-allowed{background:#fff5f5;border-color:#f5b8b8;}
+.rule-box-title{font-size:14px;font-weight:800;margin-bottom:10px;}
+.rule-box.allowed .rule-box-title{color:var(--green);}
+.rule-box.not-allowed .rule-box-title{color:var(--red);}
+.rule-list{list-style:none;}
+.rule-list li{font-size:13px;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.06);display:flex;align-items:flex-start;gap:7px;}
+.rule-list li:last-child{border-bottom:none;}
+.rule-box.allowed .rule-list li::before{content:'✔';color:var(--green);flex-shrink:0;margin-top:1px;}
+.rule-box.not-allowed .rule-list li::before{content:'✖';color:var(--red);flex-shrink:0;margin-top:1px;}
+.info-box{border-radius:10px;padding:14px 16px;margin-top:12px;font-size:13px;line-height:1.6;border:1px solid;}
+.info-box.blue{background:#eef5fb;border-color:#b3d1e8;color:#1a3a5c;}
+.info-box.gold{background:#fffbee;border-color:#f0d080;color:#5a3d00;}
+.info-box.purple{background:#f5f0ff;border-color:#c8a8e8;color:#3a1a5c;}
+.info-box.warn{background:#fff8f0;border-color:#f0c080;color:#5a2800;}
+.box-title{font-weight:800;margin-bottom:4px;font-size:13px;}
+.prep-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px;margin-bottom:14px;}
+.prep-item{background:var(--card);border-radius:12px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--border);border-top:4px solid var(--teal);}
+.prep-item-icon{font-size:24px;margin-bottom:8px;}
+.prep-item-title{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.prep-item-desc{font-size:13px;color:#445;}
+.btn-demo{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;}
+.btn-lever{background:transparent;border:2px solid var(--navy);color:var(--navy);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:800;}
+.btn-avslutt{background:var(--navy);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:800;}
+.grade-card{background:var(--card);border-radius:12px;padding:16px 18px;margin-bottom:10px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.grade-card-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.grade-card-title{font-size:14px;font-weight:800;color:var(--navy);}
+.grade-ex{background:#f4f4f2;border-left:3px solid var(--muted);padding:8px 12px;border-radius:0 6px 6px 0;font-size:12px;color:#556;margin-top:8px;line-height:1.6;}
+body.rtl .grade-ex{border-left:none;border-right:3px solid var(--muted);border-radius:6px 0 0 6px;}
+.criteria-section{margin-bottom:18px;}
+.criteria-section-title{font-size:15px;font-weight:800;color:var(--teal);margin-bottom:10px;border-left:4px solid var(--teal);padding-left:10px;}
+body.rtl .criteria-section-title{border-left:none;border-right:4px solid var(--teal);padding-left:0;padding-right:10px;}
+.tip-card{background:var(--card);border-radius:12px;padding:18px 20px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.tip-card-title{font-size:15px;font-weight:800;color:var(--teal);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.tip-number{background:var(--teal);color:#fff;width:26px;height:26px;border-radius:50%;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tip-text{font-size:13px;color:var(--text);line-height:1.65;}
+.tip-text p{margin-bottom:8px;}
+.tip-text ul,.tip-text ol{margin:6px 0 10px 18px;}
+.tip-text li{margin-bottom:4px;}
+.tip-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px;}
+.tip-table th{background:var(--navy);color:#fff;padding:7px 10px;text-align:left;font-weight:700;}
+.tip-table td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top;}
+.tip-table tr:nth-child(even) td{background:#f8f6f2;}
+body.rtl .tip-table th{text-align:right;}
+.chk-list{list-style:none;margin:8px 0;}
+.chk-list li{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;align-items:flex-start;}
+.chk-list li:last-child{border-bottom:none;}
+.chk-list li::before{content:'☐';color:var(--orange);font-size:18px;flex-shrink:0;line-height:1.1;}
+.tip-box{background:#f0f8ff;border-left:4px solid var(--teal);padding:10px 14px;border-radius:0 8px 8px 0;margin:8px 0;font-size:13px;line-height:1.7;}
+body.rtl .tip-box{border-left:none;border-right:4px solid var(--teal);border-radius:8px 0 0 8px;}
+.tip-section{margin-bottom:12px;}
+.tip-section-lbl{font-weight:800;font-size:13px;color:var(--navy);margin-bottom:5px;}
+.faq-item{background:var(--card);border-radius:12px;margin-bottom:8px;box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
+.faq-q{width:100%;background:none;border:none;padding:14px 18px;text-align:left;font-family:inherit;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;transition:background .2s;}
+body.rtl .faq-q{text-align:right;flex-direction:row-reverse;}
+.faq-q:hover,.faq-q.open{background:var(--bg);}
+.faq-arrow{font-size:16px;color:var(--orange);transition:transform .3s;flex-shrink:0;}
+.faq-q.open .faq-arrow{transform:rotate(180deg);}
+.faq-a{display:none;padding:12px 18px 14px;font-size:13px;color:#445;border-top:1px solid var(--border);line-height:1.65;}
+.faq-a.open{display:block;}
+.grade-intro{font-size:13px;color:var(--text);margin-bottom:14px;line-height:1.7;}
+.footer{text-align:center;padding:18px;font-size:12px;color:var(--muted);background:var(--card);border-top:1px solid var(--border);}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <span class="top-bar-label">🌍</span>
+  <div class="lang-bar" id="langBar"></div>
+</div>
+<div class="hero">
+  <div class="hero-badge">ENGV010 · Engelsk modul 4 · FOV · 2026</div>
+  <h1 id="heroTitle"></h1>
+  <p id="heroDesc"></p>
+</div>
+<div class="tabs-wrap"><div class="tabs" id="tabsBar"></div></div>
+<div class="content">
+  <div class="tab-panel active" id="panel-info">
+    <div class="section-heading" id="overviewTitle"></div>
+    <div class="card"><div class="overview-grid" id="overviewGrid"></div></div>
+    <div id="partsContainer"></div>
+  </div>
+  <div class="tab-panel" id="panel-prep">
+    <div class="section-heading" id="prepTitle"></div>
+    <div id="prepContainer"></div>
+  </div>
+  <div class="tab-panel" id="panel-rules">
+    <div class="section-heading" id="rulesTitle"></div>
+    <div class="rules-grid" id="rulesGrid"></div>
+    <div class="info-box blue" id="sourcesBox"></div>
+    <div class="info-box blue" id="deliveryBox" style="margin-top:10px"></div>
+  </div>
+  <div class="tab-panel" id="panel-grades">
+    <div class="section-heading" id="gradesTitle"></div>
+    <div id="gradesContainer"></div>
+  </div>
+  <div class="tab-panel" id="panel-tips">
+    <div class="section-heading" id="tipsTitle"></div>
+    <div id="tipsContainer"></div>
+  </div>
+  <div class="tab-panel" id="panel-faq">
+    <div class="section-heading" id="faqTitle"></div>
+    <div id="faqContainer"></div>
+  </div>
+</div>
+<div class="footer">Arendal Voksenopplæring · ENGV010 Engelsk modul 4 · FOV · 2026</div>
+<script>
+const VERB_TABLE = `<table class="tip-table"><thead><tr><th>English term</th><th>Norsk verb</th><th>Hva betyr det? / What does it mean?</th></tr></thead><tbody><tr><td><strong>describe</strong></td><td>beskrive</td><td>Fortell om en opplevelse, situasjon eller faglig emne med relevante begreper. / Tell about an experience, situation or topic using relevant terms.</td></tr><tr><td><strong>evaluate; consider</strong></td><td>vurdere</td><td>Overveie ulike sider. Fører til en beslutning eller konklusjon. / Consider different sides. Leads to a decision or conclusion.</td></tr><tr><td><strong>explore</strong></td><td>utforske</td><td>Oppleve, eksperimentere, oppdage, observere. / Experience, experiment, discover, observe different aspects.</td></tr><tr><td><strong>reflect (on)</strong></td><td>reflektere (over)</td><td>Undersøke og tenke gjennom ulike sider ved egne eller andres handlinger og ideer. / Examine and think through different aspects of actions and attitudes.</td></tr><tr><td><strong>understand</strong></td><td>forstå</td><td>Oppfatte meningen med noe. Kan vises ved å forklare eller sammenligne metoder. / Grasp the meaning of something. Show it by explaining or comparing.</td></tr><tr><td><strong>use</strong></td><td>bruke</td><td>Gjøre seg nytte av noe for å oppnå et mål. Anvende en metode eller et verktøy. / Make use of something to achieve a goal. Apply a method or tool.</td></tr></tbody></table>`;
+
+const BINDEORD_TABLE = `<table class="tip-table"><thead><tr><th>Kategori / Category</th><th>Linking words (English)</th></tr></thead><tbody><tr><td><strong>Tillegg / Addition</strong></td><td>and, also, as well as, besides, further, furthermore, in addition</td></tr><tr><td><strong>Sammenligning / Comparison</strong></td><td>in comparison, just as, similarly, likewise, in the same way</td></tr><tr><td><strong>Kontrast / Contrast</strong></td><td>but, however, in contrast to, although, on the other hand, in spite of, alternatively</td></tr><tr><td><strong>Rekkefølge / Sequence</strong></td><td>first, firstly, second, secondly, then, afterwards, next, finally</td></tr><tr><td><strong>Årsak / Reason</strong></td><td>because, for, due to, in order to, so that, as a result</td></tr><tr><td><strong>Konklusjon / Conclusion</strong></td><td>to conclude, in brief, so, therefore, to sum up, in summary, in conclusion</td></tr><tr><td><strong>Eksempel / Example</strong></td><td>for example, for instance, such as, like, to illustrate, including</td></tr></tbody></table>`;
+
+const SKRIVERAMME = `<div class="tip-section"><div class="tip-section-lbl">📌 Overskrift / Heading</div><div class="tip-box">Write the task number and choose a suitable heading.<br>Skriv oppgavenummer og velg en passende overskrift.</div></div><div class="tip-section"><div class="tip-section-lbl">🔵 Innledning / Introduction</div><div class="tip-box">• <em>This text will discuss…</em><br>• <em>The topic for this text is…</em><br>• <em>There are many different opinions about…</em><br>• <em>I believe that…</em><br>• <em>In this text I will…</em></div></div><div class="tip-section"><div class="tip-section-lbl">🟡 Hoveddel / Main Body – Del i avsnitt / Divide into paragraphs</div><div class="tip-box"><strong>1st paragraph:</strong> <em>First of all… / To begin with… / Firstly, I will…</em><br><br><strong>2nd paragraph:</strong> <em>Another point is… / In addition… / Secondly…</em><br><br><strong>3rd paragraph:</strong> <em>Finally… / The last reason is… / Another example is…</em></div></div><div class="tip-section"><div class="tip-section-lbl">🔴 Avslutning / Conclusion</div><div class="tip-box">• <em>In conclusion…</em><br>• <em>To sum up…</em><br>• <em>In summary…</em><br>• <em>All in all, I think that…</em></div></div>`;
+
+const T = {
+no:{
+  langName:"Norsk",dir:"ltr",
+  heroTitle:"ENGV010 – Eksamen & Tentamen",
+  heroDesc:"Viktig informasjon om eksamen og tentamen i ENGV010 Engelsk modul 4 · FOV.",
+  tabInfo:"📋 Om eksamen",tabPrep:"📅 Forberedelsesdag",tabRules:"⚠️ Regler",tabGrades:"🎯 Karakterer",tabTips:"💡 Tips",tabFaq:"❓ Spørsmål",
+  overviewTitle:"Eksamensoversikt",
+  ovDuration:"5 timer",ovDurationLabel:"Totalt",ovD1:"Del 1",ovD1Label:"30% · 1,5t",ovD2:"Del 2",ovD2Label:"30% · 1,5t",ovD3:"Del 3",ovD3Label:"40% · 2t",
+  p1Title:"Del 1 – Leseforståelse",p1Time:"Ca. 1,5 time",p1Weight:"30%",
+  p1Desc:`<p>Del 1 tester de <strong>reseptive ferdighetene</strong> dine – evnen til å lese og forstå engelske tekster.</p><ul><li>Du svarer <strong>IKKE</strong> med egne skrevne ord. Oppgavene løses ved å:<ul><li>Klikke på riktig svaralternativ</li><li>Klikke på ord eller setninger i løpende tekst</li><li>Dra og slippe avsnitt i riktig rekkefølge</li></ul></li><li>Det er <strong>mange oppgaver</strong> – planlegg tiden godt.</li><li>Flere oppgaver er knyttet til <strong>temaet fra forberedelsesdelen</strong>.</li><li>Del 1 rettes <strong>automatisk</strong> av systemet. Ingen sensor ser på svarene dine i Del 1.</li><li>Anbefalt tid: ca. <strong>1,5 time</strong>.</li></ul>`,
+  p2Title:"Del 2 – Videreformidling og tekstsamhandling",p2Time:"Ca. 1,5 time",p2Weight:"30%",
+  p2Desc:`<p>Del 2 tester om du kan <strong>videreformidle</strong> innhold du hører/ser og gi egne synspunkter.</p><ul><li>Du <strong>ser og hører</strong> et videoklipp – husk hodetelefoner!</li><li>Du kan <strong>stoppe og starte</strong> videoen så mange ganger du vil.</li><li>Oppgaven har <strong>tre kulepunkter</strong>:<ul><li>Kulepunkt 1 og 2: Gjenfortell informasjon fra videoen med egne ord</li><li>Kulepunkt 3: Gi <strong>dine egne tanker og synspunkter</strong> om innholdet</li></ul></li><li>Skriv ca. <strong>150 ord</strong>.</li><li>To sensorer vurderer svaret ditt.</li><li>Anbefalt tid: ca. <strong>1,5 time</strong>.</li></ul>`,
+  p3Title:"Del 3 – Skriftlig produksjon",p3Time:"Ca. 2 timer",p3Weight:"40%",
+  p3Desc:`<p>Del 3 er den <strong>tyngste og viktigste</strong> delen (40% av karakteren). Her skal du skrive en selvstendig, lengre engelsk tekst.</p><ul><li>Du velger <strong>én av tre oppgaver</strong> (A, B eller C).</li><li>Oppgavene er knyttet til temaet fra forberedelsesdelen.</li><li>Du kan bruke informasjon fra forberedelsesdelen og <strong>egne erfaringer</strong>.</li><li>Du kan bli bedt om å <strong>diskutere, argumentere, reflektere</strong> eller lignende.</li><li>Skriv ca. <strong>300–700 ord</strong>. En lengre, godt strukturert tekst viser mer kompetanse.</li><li>Del teksten inn i <strong>innledning, hoveddel (2–3+ avsnitt) og avslutning</strong>.</li><li>To sensorer vurderer svaret ditt.</li><li>Anbefalt tid: ca. <strong>2 timer</strong>.</li></ul>`,
+  prepTitle:"Forberedelsesdagen",
+  prepIntro:"Det er en forberedelsesdag til denne eksamenen. Forberedelsesmaterialet er tilgjengelig fra kl. <strong>09:00</strong>. Du kan ta med notatene dine på eksamensdagen – men de er ikke en del av eksamenssvaret ditt.",
+  prepItems:[
+    {icon:"🤝",title:"Samarbeid",desc:"Du kan samarbeide med andre elever og diskutere temaet i forberedelsestiden."},
+    {icon:"📝",title:"Notater og tankekart",desc:"Ta notater, lag tankekart og skriv ned viktige begreper og ideer om temaet."},
+    {icon:"🤔",title:"Refleksjon",desc:"Tenk over hva du allerede vet om temaet og hvilke egne erfaringer du kan bruke på eksamensdagen."},
+    {icon:"📖",title:"Øv med ordbøker",desc:"Øv på å bruke ordbøkene og hjelpemidlene du har tilgang til under eksamen."},
+    {icon:"✍️",title:"Øv på å strukturere tekst",desc:"Øv på å lage overskrifter, avsnitt og god struktur med innledning, hoveddel og avslutning."},
+    {icon:"💡",title:"Gå gjennom Its Learning",desc:"Se på tidligere oppgaver og tekster du har skrevet i Its Learning. Øv på å skrive engelske tekster med god struktur."}
+  ],
+  prepNote:"Læreren kan veilede deg i forberedelsestiden, men skal ikke undervise. Det er kompetansen du viser på <strong>eksamensdagen</strong> som vurderes – ikke det du gjør på forberedelsesdagen.",
+  rulesTitle:"Regler under eksamen",
+  allowedTitle:"✅ Tillatt",notAllowedTitle:"❌ Ikke tillatt",
+  allowed:["Ordbøker og bøker (uten internett)","Noen utvalgte nettbaserte hjelpemidler fra skolen","Hodetelefoner (påkrevd for Del 2)","Notatene dine fra forberedelsesdagen"],
+  notAllowed:["Oversettelsesprogrammer (Google Translate, DeepL m.fl.)","Mobiltelefon og andre kommunikasjonsverktøy","Kunstig intelligens (AI) til å generere svar","Programvare med samskriving og chat"],
+  sourcesTitle:"📌 Kildebruk",
+  sourcesDesc:"Hvis du bruker informasjon fra internett, bøker eller andre kilder, MÅ du oppgi dem. Skriv navn på forfatter og tittel, eller nettadressen og datoen. Det må være tydelig hva som er dine egne tanker, og hva som er hentet fra andre. Eksamenssvarene sjekkes for plagiat.",
+  deliveryTitle:"📤 Levering på eksamensdagen",
+  deliveryDesc:"Svarene dine lagres automatisk underveis. Klikk på «LEVER» og deretter «AVSLUTT OG LEVER» for å levere:",
+  gradesTitle:"Karakterer og vurdering",
+  gradeIntro:"To sensorer vurderer besvarelsen din (Del 2 og Del 3). Karakterskalaen går fra 1 til 6. For å oppnå høyere enn karakter 1, MÅ du vise kompetanse i ALLE tre delene.",
+  gradeScaleLabel:"Karakterskala:",
+  gradeWarningTitle:"⚠️ Viktig om skrivestil",
+  gradeWarning:"Hvis sensorene oppdager stor variasjon i måten svarene er skrevet på mellom Del 2 og Del 3 – for eksempel at deler ser ut til å ikke være skrevet av deg selv – kan det få konsekvenser for vurderingen. Alt du leverer skal være ditt eget arbeid.",
+  gradeSections:[
+    {title:"Del 2 – Hva kjennetegner de ulike karakterene?",items:[
+      {grade:"2",label:"Karakter 2 – Grunnleggende",
+       desc:"Du videreformidler informasjon og innhold på en enkel måte. Du svarer kort og enkelt på teksten. Teksten har litt uklar eller enkel struktur.",
+       ex:"Eksempel: Du gjenforteller noen fakta fra videoen med enkle setninger, men svarer ikke på alle tre kulepunktene, og du har ikke dine egne meninger med."},
+      {grade:"4",label:"Karakter 4 – Middels god",
+       desc:"Du videreformidler informasjon på en middels god måte. Du uttrykker egne synspunkter til en viss grad. Teksten har stort sett logisk struktur.",
+       ex:"Eksempel: Du gjenforteller de viktigste punktene fra videoen, svarer på alle tre kulepunktene og legger til dine egne tanker. Strukturen er stort sett klar."},
+      {grade:"6",label:"Karakter 6 – Meget god",
+       desc:"Du videreformidler informasjon og innhold på en meget god måte. Du viser i stor grad selvstendige setninger. Svaret responderer fullstendig på teksten. Rettskriving er korrekt.",
+       ex:"Eksempel: Du gjenforteller videoen presist og fullstendig, svarer på alle kulepunktene med egne, velformulerte meninger, teksten flyter godt, og det er nesten ingen skrivefeil."}
+    ]},
+    {title:"Del 3 – Hva kjennetegner de ulike karakterene?",items:[
+      {grade:"2",label:"Karakter 2 – Grunnleggende",
+       desc:"Svaret er til en viss grad relevant. Det behandler temaet på overflatenivå. Enkelt, grunnleggende ordforråd. Noe flyt og sammenheng.",
+       ex:"Eksempel: Du skriver noen setninger om temaet, men går ikke i dybden. Du har litt variasjon i setninger, men mange feil. Teksten mangler klar struktur."},
+      {grade:"4",label:"Karakter 4 – Middels god",
+       desc:"Svaret er relevant. Det behandler temaet på en stort sett selvstendig og kreativ eller kritisk måte. Generelt ordforråd med bruk av passende uttrykk. Logisk struktur.",
+       ex:"Eksempel: Du skriver en tekst med innledning, hoveddel og avslutning. Du bruker bindeord og kan diskutere temaet med egne meninger og noen idiomatiske uttrykk."},
+      {grade:"6",label:"Karakter 6 – Meget god",
+       desc:"Svaret er relevant og fullstendig. Det behandler temaet på en selvstendig og kreativ eller kritisk måte. Bredt, nyansert og variert ordforråd. Gjennomgående flyt.",
+       ex:"Eksempel: Du skriver en velstrukturert tekst med tydelig innledning, godt utdypede avsnitt og en overbevisende avslutning. Du bruker varierte bindeord. Ordforrådet er bredt og presist. Svaret er interessant å lese."}
+    ]}
+  ],
+  tipsTitle:"Tips til eksamen",
+  tips:[
+    {n:1,title:"Del 1 – Leseforståelse: Tips",
+     text:`<p>Del 1 tester om du <strong>forstår</strong> tekster du leser. Du svarer IKKE med egne ord – oppgavene er klikke- eller dra-oppgaver.</p><ul><li>Les oppgavene <strong>nøye</strong> – forstå hva oppgaven spør om før du svarer.</li><li>Du kan trykke deg <strong>fram og tilbake</strong> mellom oppgavene i systemet.</li><li>Synes du en oppgave er vanskelig? <strong>Hopp over den</strong> og gjør en annen oppgave først. Kom tilbake til den vanskelige oppgaven etterpå.</li><li>Det er <strong>mange oppgaver</strong> i Del 1 – planlegg tiden godt (ca. 1,5 time).</li><li>Svaret er alltid i teksten. Les teksten i oppgaven nøye.</li></ul>`},
+    {n:2,title:"Del 2 – Videreformidling: Tips",
+     text:`<p>Del 2 tester om du kan <strong>forstå og gjenfortelle</strong> innhold fra en video, og om du kan gi dine egne tanker.</p><ul><li><strong>Se og lytt til videoen FLERE ganger.</strong> Du kan stoppe og starte videoen når du vil – bruk den muligheten!</li><li>Skriv ned <strong>stikkord</strong> (nøkkelord) mens du ser/hører på videoen. Det hjelper deg å huske det viktigste.</li><li>Les oppgaven med de <strong>tre kulepunktene</strong> nøye. Du MÅ svare på ALLE tre – ikke glem noen!</li><li>Kulepunkt 1 og 2: Gjenfortell og videreformidle informasjon fra videoen med egne ord.</li><li>Kulepunkt 3: Her skal du gi <strong>dine EGNE tanker og synspunkter</strong>. Hva mener du? Hva synes du om temaet?</li><li>Skriv ca. <strong>150 ord</strong>. Ikke for kort, ikke for langt.</li><li>Bruk skriverammen og bindeord (se Tips 5 og 6) – de gjelder også for Del 2!</li></ul>`},
+    {n:3,title:"Del 3 – Skriftlig produksjon: Tips",
+     text:`<p>Del 3 er den <strong>lengste og viktigste</strong> delen (40%). Her skal du skrive en selvstendig tekst.</p><ul><li><strong>Les alle tre oppgavene (A, B, C) nøye.</strong> Velg den du synes passer best for deg.</li><li><strong>Les oppgaven du velger en gang til.</strong> Hva spør oppgaven om? Svar på ALT oppgaven ber om.</li><li>Planlegg teksten din. En god måte: <strong>skriv stikkord og ideer</strong> på et kladdeark før du begynner.</li><li>Lag et <strong>tankekart</strong>: skriv temaet i midten, lag streker til stikkord og eksempler rundt. Koble ideene som henger sammen.</li><li>Del teksten inn i: <strong>Innledning → Hoveddel (2–3 avsnitt) → Avslutning</strong>.</li><li>Hvert avsnitt i hoveddelen bør handle om <strong>ett tema eller én idé</strong>.</li><li>Skriv ca. <strong>300–700 ord</strong>. En lengre, godt strukturert tekst viser mer kompetanse.</li><li>Du kan bruke informasjon fra <strong>forberedelsesdelen og egne erfaringer</strong>.</li><li>Stopp opp underveis og <strong>les over teksten din</strong> (se sjekklisten i Tips 7).</li></ul>`},
+    {n:4,title:"Verb og begreper i eksamensoppgavene",
+     text:`<p style="margin-bottom:8px">Disse verbene brukes ofte i oppgaveinstruksjonene. <strong>Forstå hva de betyr</strong> – det er viktig for at du svarer riktig!</p>${VERB_TABLE}`},
+    {n:5,title:"Skriveramme – Slik strukturerer du teksten",
+     text:`<p style="margin-bottom:8px">Bruk denne rammen når du planlegger og skriver teksten din i Del 2 og Del 3:</p>${SKRIVERAMME}`},
+    {n:6,title:"Bindeord – Linking Words",
+     text:`<p style="margin-bottom:8px">Varier bruken av bindeord for å gjøre teksten <strong>flytende og sammenhengende</strong>. Her er mange eksempler:</p>${BINDEORD_TABLE}`},
+    {n:7,title:"Revidere teksten – Sjekkliste",
+     text:`<p style="margin-bottom:8px">Stopp opp <strong>underveis</strong> mens du skriver og les over teksten. Still deg selv disse spørsmålene:</p><ul class="chk-list"><li>Har teksten en <strong>overskrift</strong> og en <strong>innledning</strong>?</li><li>Er teksten delt inn i <strong>avsnitt</strong>? Holder du deg til ett tema per avsnitt?</li><li>Er det god <strong>sammenheng</strong> i teksten – henger setningene og avsnittene godt sammen?</li><li>Bruker du <strong>bindeord / tekstbindere</strong> for å binde setningene sammen?</li><li>Har teksten en <strong>avslutning</strong> som oppsummerer eller konkluderer?</li></ul>`}
+  ],
+  faqTitle:"Vanlige spørsmål",
+  faqs:[
+    {q:"Hva er eksamen?",a:"Eksamen er den offisielle avsluttende prøven i ENGV010 Engelsk modul 4. Karakteren du får teller på vitnemålet ditt."},
+    {q:"Hva er tentamen?",a:"Tentamen er en øvingseksamen. Den ser ut akkurat som den ekte eksamen, men karakteren teller IKKE. Det er en mulighet for deg til å øve og forberede deg på eksamensformen."},
+    {q:"Hva er forberedelsesdagen?",a:"Forberedelsesdagen er en skoledag som kommer FØR eksamen. Fra kl. 09:00 får du tilgang til forberedelsesmaterialet – tekster og informasjon om temaet. Du kan samarbeide med andre, ta notater og øve. Du kan ta med notatene på eksamensdagen, men de er ikke en del av eksamenssvaret ditt."},
+    {q:"Kan jeg ta med notater fra forberedelsesdagen inn på eksamen?",a:"Ja, du kan ta med notatene. De er imidlertid IKKE en del av eksamenssvaret ditt og blir ikke vurdert av sensorene. De er kun en hjelp for deg."},
+    {q:"Hva er de tre delene av eksamen?",a:"Del 1: Leseforståelse (30%, ca. 1,5 time) – klikke/dra-oppgaver, automatisk rettet. Del 2: Videreformidling (30%, ca. 1,5 time) – se video, skriv ca. 150 ord. Del 3: Skriftlig produksjon (40%, ca. 2 timer) – velg én av tre oppgaver, skriv 300–700 ord."},
+    {q:"Må jeg svare på alle delene?",a:"Ja. For å oppnå høyere enn karakter 1, MÅ du vise kompetanse i ALLE tre delene. For Del 3 velger du én av tre oppgaver. For Del 2 MÅ du svare på alle tre kulepunktene."},
+    {q:"Trenger jeg hodetelefoner?",a:"Ja. I Del 2 skal du se og høre en video. Hodetelefoner er obligatorisk. Husk å ta med hodetelefoner og lader til eksamen."},
+    {q:"Kan jeg bruke Google Translate?",a:"Nei. Det er strengt forbudt å bruke oversettelsesprogrammer under eksamen. Dette gjelder alle slike programmer, inkludert DeepL og lignende."},
+    {q:"Kan jeg bruke AI (kunstig intelligens)?",a:"Nei. Det er forbudt å bruke AI til å generere innhold i svarene dine. Alt du leverer skal være ditt eget arbeid."},
+    {q:"Kan jeg bruke ordbok?",a:"Ja. Du kan bruke ordbøker og hjelpemidler som ikke krever internett. Noen nettbaserte hjelpemidler kan også være tillatt – sjekk med skolen på forhånd."},
+    {q:"Kan jeg bruke mobilen?",a:"Nei. Mobiltelefon er ikke tillatt under eksamen."},
+    {q:"Hvem retter eksamen?",a:"Del 1 rettes automatisk av systemet. Del 2 og Del 3 vurderes av to sensorer (to lærere/eksamenssensorer)."},
+    {q:"Hvordan vektes de tre delene?",a:"Del 1: 30%, Del 2: 30%, Del 3: 40%. Del 3 er den viktigste delen og teller mest."},
+    {q:"Hva er karakterskalaen?",a:"Karakterskalaen går fra 1 (lavest) til 6 (høyest). For å oppnå høyere enn karakter 1, MÅ du vise kompetanse i ALLE tre delene."},
+    {q:"Hva betyr det hvis sensorene ser stor variasjon i skrivestilen?",a:"Hvis deler av svaret ditt ser ut til å ikke være skrevet av deg selv – for eksempel at Del 2 og Del 3 er skrevet på veldig forskjellig nivå – kan sensorene stille spørsmål ved om alt er ditt eget arbeid."},
+    {q:"Hva skjer hvis jeg ikke svarer på alle delene?",a:"For å oppnå høyere enn karakter 1 MÅ du vise kompetanse i alle tre delene. Hvis du ikke svarer på Del 1, kan du ikke oppnå full kompetanse."},
+    {q:"Hvor mange ord skal jeg skrive i Del 2?",a:"Du bør skrive ca. 150 ord. Det er ikke en absolutt grense, men sikt mot dette."},
+    {q:"Hvor mange ord skal jeg skrive i Del 3?",a:"Du bør skrive ca. 300–700 ord. Kortere enn 300 er trolig for lite til å vise full kompetanse."},
+    {q:"Kan jeg velge hvilken oppgave jeg svarer på i Del 3?",a:"Ja. Du velger én av tre oppgaver: A, B eller C. Les alle tre nøye og velg den du synes passer best for deg."},
+    {q:"Hva er et tankekart?",a:"Et tankekart er en planleggingsmetode. Du skriver temaet i midten og noterer ideer, eksempler og stikkord rundt det. Lag streker mellom ideer som henger sammen. Det hjelper deg å strukturere teksten din."},
+    {q:"Hva er bindeord?",a:"Bindeord (linking words) er ord og uttrykk du bruker for å binde setninger og avsnitt sammen. Eksempler: 'First of all', 'In addition', 'However', 'In conclusion'. De gjør teksten din mer flytende."},
+    {q:"Hva er en skriveramme?",a:"En skriveramme er en struktur du kan bruke som hjelp når du planlegger teksten. Den viser deg hvordan du kan begynne innledningen, bygge opp hoveddelen og avslutte teksten. Se Tips-fanen for eksempler."},
+    {q:"Må jeg oppgi kilder?",a:"Ja, hvis du bruker informasjon fra nettet eller bøker, MÅ du oppgi kildene. Skriv navn på forfatter og tittel, eller nettadressen og datoen. Eksamenssvarene sjekkes for plagiat."},
+    {q:"Lagres svarene mine automatisk?",a:"Ja. Svarene lagres automatisk underveis. Du trenger ikke å trykke 'lagre' selv."},
+    {q:"Hvordan leverer jeg eksamen?",a:"Klikk på 'LEVER' og deretter 'AVSLUTT OG LEVER'. Du ser disse knappene i eksamensverktøyet."},
+    {q:"Kan jeg gå tilbake og endre svarene mine?",a:"Ja, du kan gå tilbake og endre svarene dine inntil du klikker 'AVSLUTT OG LEVER'."},
+    {q:"Hva skjer hvis datamaskinen krasjer?",a:"Ta kontakt med eksamensansvarlig på skolen umiddelbart. Svarene dine er lagret automatisk, så du mister ikke arbeidet ditt."},
+    {q:"Hva gjør jeg hvis jeg ikke forstår et ord i oppgaven?",a:"Bruk ordboken din. Prøv å forstå sammenhengen i setningen. Ikke bruk Google Translate – det er forbudt."},
+    {q:"Hva er de viktigste tipsene for å gjøre det bra?",a:"1) Les alle oppgavene nøye. 2) Svar på ALT oppgaven spør om. 3) Bruk forberedelsesnotatene dine. 4) Strukturer teksten med innledning, hoveddel og avslutning. 5) Bruk bindeord. 6) Les over teksten din og rett feil. 7) Pass på tiden."}
+  ]
+},
+en:{
+  langName:"English",dir:"ltr",
+  heroTitle:"ENGV010 – Exam & Trial Exam",
+  heroDesc:"Important information about the exam and trial exam (tentamen) for ENGV010 English Module 4 · FOV.",
+  tabInfo:"📋 About Exam",tabPrep:"📅 Prep Day",tabRules:"⚠️ Rules",tabGrades:"🎯 Grades",tabTips:"💡 Tips",tabFaq:"❓ FAQ",
+  overviewTitle:"Exam Overview",
+  ovDuration:"5 hrs",ovDurationLabel:"Total",ovD1:"Part 1",ovD1Label:"30% · 1.5h",ovD2:"Part 2",ovD2Label:"30% · 1.5h",ovD3:"Part 3",ovD3Label:"40% · 2h",
+  p1Title:"Part 1 – Reading Comprehension",p1Time:"Approx. 1.5 hours",p1Weight:"30%",
+  p1Desc:`<p>Part 1 tests your <strong>receptive skills</strong> – your ability to read and understand English texts.</p><ul><li>You do <strong>NOT</strong> write your own answers. Tasks are completed by:<ul><li>Clicking on the correct answer choice</li><li>Clicking on words or sentences in a text</li><li>Dragging and dropping paragraphs into the correct order</li></ul></li><li>There are <strong>many tasks</strong> in Part 1 – manage your time carefully.</li><li>Several tasks are related to the <strong>topic from the preparation material</strong>.</li><li>Part 1 is marked <strong>automatically</strong> by the system. No examiner reads your Part 1 answers.</li><li>Recommended time: approx. <strong>1.5 hours</strong>.</li></ul>`,
+  p2Title:"Part 2 – Relaying Information and Text Interaction",p2Time:"Approx. 1.5 hours",p2Weight:"30%",
+  p2Desc:`<p>Part 2 tests whether you can <strong>relay content</strong> you watch/hear and express your own views.</p><ul><li>You <strong>watch and listen</strong> to a video clip – remember headphones!</li><li>You can <strong>pause and restart</strong> the video as many times as you like.</li><li>The task has <strong>three bullet points</strong>:<ul><li>Bullet points 1 and 2: Relay and re-tell information from the video</li><li>Bullet point 3: Give <strong>your own thoughts and opinions</strong> about the content</li></ul></li><li>Write approx. <strong>150 words</strong>.</li><li>Two examiners assess your answer.</li><li>Recommended time: approx. <strong>1.5 hours</strong>.</li></ul>`,
+  p3Title:"Part 3 – Written Production",p3Time:"Approx. 2 hours",p3Weight:"40%",
+  p3Desc:`<p>Part 3 is the <strong>most demanding and most important</strong> part (40% of the grade). Here you show your ability to produce longer English texts.</p><ul><li>You choose <strong>one of three tasks</strong> (A, B or C).</li><li>Tasks are related to the topic from the preparation material.</li><li>You can use information from preparation material, previous learning, and <strong>your own experiences</strong>.</li><li>You may be asked to <strong>discuss, argue, reflect</strong> or similar.</li><li>Write approx. <strong>300–700 words</strong>. A longer, well-structured text demonstrates more competence.</li><li>Divide your text into <strong>introduction, main body (2–3+ paragraphs) and conclusion</strong>.</li><li>Two examiners assess your answer.</li><li>Recommended time: approx. <strong>2 hours</strong>.</li></ul>`,
+  prepTitle:"Preparation Day",
+  prepIntro:"There is a preparation day before this exam. The preparation material is available from <strong>09:00</strong>. You may bring your notes to the exam – but they are not part of your exam answer.",
+  prepItems:[
+    {icon:"🤝",title:"Collaborate",desc:"You can work together with other students and discuss the topic during preparation time."},
+    {icon:"📝",title:"Notes and mind maps",desc:"Take notes, create mind maps and write down key concepts and ideas about the topic."},
+    {icon:"🤔",title:"Reflect",desc:"Think about what you already know about the topic and which personal experiences you can use on exam day."},
+    {icon:"📖",title:"Practise using dictionaries",desc:"Practise using the dictionaries and tools available to you during the exam."},
+    {icon:"✍️",title:"Practise text structure",desc:"Practise creating headings, paragraphs and a good structure with introduction, main body and conclusion."},
+    {icon:"💡",title:"Review Its Learning",desc:"Look through previous tasks and texts you have written in Its Learning. Practise writing English texts with good structure."}
+  ],
+  prepNote:"The teacher can guide you during preparation time but cannot teach. It is the competence you show on <strong>exam day</strong> that is assessed – not what you do on the preparation day.",
+  rulesTitle:"Rules During the Exam",
+  allowedTitle:"✅ Allowed",notAllowedTitle:"❌ Not Allowed",
+  allowed:["Dictionaries and books (without internet)","Some school-approved online tools","Headphones (required for Part 2)","Your notes from the preparation day"],
+  notAllowed:["Translation programs (e.g. Google Translate, DeepL)","Mobile phone and other communication tools","Artificial intelligence (AI) to generate answers","Co-writing software and chat"],
+  sourcesTitle:"📌 Sources / Citing sources",
+  sourcesDesc:"If you use information from the internet, books or other sources, you MUST cite them. Write the author's name and title, or the web address and date. There must be a clear distinction between your own ideas and what is borrowed from others. Exam answers are checked for plagiarism.",
+  deliveryTitle:"📤 Submitting on Exam Day",
+  deliveryDesc:"Your answers are saved automatically as you go. Click 'LEVER' and then 'AVSLUTT OG LEVER' to submit:",
+  gradesTitle:"Grades and Assessment",
+  gradeIntro:"Two examiners assess your answers (Parts 2 and 3). The grade scale runs from 1 to 6. To achieve higher than grade 1, you MUST show competence in ALL three parts.",
+  gradeScaleLabel:"Grade scale:",
+  gradeWarningTitle:"⚠️ Important – Writing style",
+  gradeWarning:"If examiners notice a large variation in writing style between Parts 2 and 3 – for example if parts appear not to have been written by you – it may affect your assessment. Everything you submit must be your own work.",
+  gradeSections:[
+    {title:"Part 2 – What characterises each grade?",items:[
+      {grade:"2",label:"Grade 2 – Basic",
+       desc:"You relay information in a simple way. You respond briefly and simply. The text has a somewhat unclear or simple structure.",
+       ex:"Example: You re-tell some facts from the video in simple sentences, but do not answer all three bullet points, and do not include your own opinions."},
+      {grade:"4",label:"Grade 4 – Adequate",
+       desc:"You relay information adequately. You express your own views to some extent. The text has mostly logical structure.",
+       ex:"Example: You relay the main points from the video, answer all three bullet points, and add your own thoughts. The structure is mostly clear."},
+      {grade:"6",label:"Grade 6 – Excellent",
+       desc:"You relay information and content very well. You largely show independent sentences. The answer responds fully to the text. Spelling is correct.",
+       ex:"Example: You relay the video precisely and fully, answer all bullet points with well-expressed personal opinions, the text flows well, and there are almost no errors."}
+    ]},
+    {title:"Part 3 – What characterises each grade?",items:[
+      {grade:"2",label:"Grade 2 – Basic",
+       desc:"The answer is partly relevant. It treats the topic at surface level. Basic vocabulary. Some flow and coherence.",
+       ex:"Example: You write some sentences about the topic but do not go into depth. Some variation in sentences but many errors. The text lacks a clear structure."},
+      {grade:"4",label:"Grade 4 – Adequate",
+       desc:"The answer is relevant. It treats the topic in a mostly independent and creative or critical way. General vocabulary with some idiomatic expressions. Logical structure.",
+       ex:"Example: You write a text with introduction, main body and conclusion. You use linking words and show the ability to discuss the topic with your own opinions."},
+      {grade:"6",label:"Grade 6 – Excellent",
+       desc:"The answer is relevant and complete. It treats the topic in an independent and creative or critical way. Wide, varied vocabulary. Consistent flow.",
+       ex:"Example: You write a well-structured text with a clear introduction, well-developed paragraphs and a convincing conclusion. You use varied linking words. Vocabulary is broad and precise. The answer is engaging to read."}
+    ]}
+  ],
+  tipsTitle:"Exam Tips",
+  tips:[
+    {n:1,title:"Part 1 – Reading Comprehension: Tips",
+     text:`<p>Part 1 tests whether you <strong>understand</strong> the texts you read. You do NOT write answers – tasks are clicking or dragging.</p><ul><li>Read the tasks <strong>carefully</strong> before answering. Understand what is being asked.</li><li>You can move <strong>forward and backward</strong> between tasks in the system.</li><li>If a task seems difficult, <strong>skip it</strong> and do another task first. Come back to it later.</li><li>There are <strong>many tasks</strong> in Part 1 – manage your time well (approx. 1.5 hours).</li><li>The answer is always found in the text. Read the text carefully.</li></ul>`},
+    {n:2,title:"Part 2 – Relaying Information: Tips",
+     text:`<p>Part 2 tests whether you can <strong>understand and relay</strong> content from a video and express your own views.</p><ul><li><strong>Watch and listen to the video SEVERAL times.</strong> You can pause and restart whenever you want – use that opportunity!</li><li>Write down <strong>key words (stikkord)</strong> while watching/listening. This helps you remember the most important points.</li><li>Read the task with the <strong>three bullet points</strong> carefully. You MUST answer ALL three – do not forget any!</li><li>Bullet points 1 and 2: Relay and re-tell information from the video in your own words.</li><li>Bullet point 3: Give <strong>YOUR OWN thoughts and opinions</strong>. What do you think? What is your view on the topic?</li><li>Write approx. <strong>150 words</strong>. Not too short, not too long.</li><li>Use the writing frame and linking words (see Tips 5 and 6) – they apply here too!</li></ul>`},
+    {n:3,title:"Part 3 – Written Production: Tips",
+     text:`<p>Part 3 is the <strong>longest and most important</strong> part (40%). You write an independent text.</p><ul><li><strong>Read all three tasks (A, B, C) carefully.</strong> Choose the one that suits you best.</li><li><strong>Read your chosen task again.</strong> What is the task asking? Answer EVERYTHING the task asks for.</li><li>Plan your text. A good way: <strong>write key words and ideas</strong> on a rough sheet before you start.</li><li>Make a <strong>mind map (tankekart)</strong>: write the topic in the middle, draw lines to key words and examples around it. Connect related ideas.</li><li>Divide your text into: <strong>Introduction → Main body (2–3 paragraphs) → Conclusion</strong>.</li><li>Each paragraph in the main body should be about <strong>one topic or one idea</strong>.</li><li>Write approx. <strong>300–700 words</strong>. A longer, well-structured text shows more competence.</li><li>You can use information from the <strong>preparation material and your own experiences</strong>.</li><li>Stop and <strong>re-read your text</strong> as you write (see the checklist in Tip 7).</li></ul>`},
+    {n:4,title:"Verbs and terms used in exam tasks",
+     text:`<p style="margin-bottom:8px">These verbs are often used in task instructions. <strong>Understand what they mean</strong> – this is essential for answering correctly!</p>${VERB_TABLE}`},
+    {n:5,title:"Writing Frame – How to structure your text",
+     text:`<p style="margin-bottom:8px">Use this frame when planning and writing your text in Part 2 and Part 3:</p>${SKRIVERAMME}`},
+    {n:6,title:"Linking Words – Bindeord",
+     text:`<p style="margin-bottom:8px">Vary your use of linking words to make your text <strong>fluent and coherent</strong>. Here are many examples:</p>${BINDEORD_TABLE}`},
+    {n:7,title:"Revising Your Text – Checklist",
+     text:`<p style="margin-bottom:8px">Stop and re-read your text as you write. Ask yourself:</p><ul class="chk-list"><li>Does the text have a <strong>heading</strong> and an <strong>introduction</strong>?</li><li>Is the text divided into <strong>paragraphs</strong>? Do you keep to one topic per paragraph?</li><li>Is there good <strong>coherence</strong> in the text – do the sentences and paragraphs connect well?</li><li>Do you use <strong>linking words</strong> to connect sentences and paragraphs?</li><li>Does the text have a <strong>conclusion</strong> that summarises or concludes?</li></ul>`}
+  ],
+  faqTitle:"Frequently Asked Questions",
+  faqs:[
+    {q:"What is the exam?",a:"The exam is the official final test for ENGV010 English Module 4. The grade counts on your diploma."},
+    {q:"What is tentamen?",a:"Tentamen is a practice exam. It looks exactly like the real exam but the grade does NOT count. It is your opportunity to practise and prepare for the exam format."},
+    {q:"What is the preparation day?",a:"The preparation day is a school day BEFORE the exam. From 09:00 you get access to the preparation material – texts and information about the topic. You can collaborate, take notes and practise. You may bring your notes to the exam, but they are not part of your answer."},
+    {q:"Can I bring notes from the preparation day into the exam?",a:"Yes, you may bring your notes. However, they are NOT part of your exam answer and are not assessed by the examiners. They are only a help for you."},
+    {q:"What are the three parts of the exam?",a:"Part 1: Reading comprehension (30%, approx. 1.5 hours) – click/drag tasks, marked automatically. Part 2: Relaying information (30%, approx. 1.5 hours) – watch video, write approx. 150 words. Part 3: Written production (40%, approx. 2 hours) – choose one of three tasks, write 300–700 words."},
+    {q:"Do I have to answer all parts?",a:"Yes. To achieve higher than grade 1, you MUST show competence in ALL three parts. For Part 3 you choose one of three tasks. For Part 2 you MUST answer all three bullet points."},
+    {q:"Do I need headphones?",a:"Yes. In Part 2 you will watch and listen to a video. Headphones are required. Remember to bring headphones and a charger."},
+    {q:"Can I use Google Translate?",a:"No. It is strictly forbidden to use translation programs during the exam. This applies to all such programs, including DeepL and similar tools."},
+    {q:"Can I use AI (artificial intelligence)?",a:"No. It is forbidden to use AI to generate content in your answers. Everything you submit must be your own work."},
+    {q:"Can I use a dictionary?",a:"Yes. You can use dictionaries and tools that do not require internet. Some approved online tools may also be available – check with the school beforehand."},
+    {q:"Can I use my mobile phone?",a:"No. Mobile phones are not allowed during the exam."},
+    {q:"Who marks the exam?",a:"Part 1 is marked automatically by the system. Parts 2 and 3 are assessed by two examiners."},
+    {q:"How are the parts weighted?",a:"Part 1: 30%, Part 2: 30%, Part 3: 40%. Part 3 is the most important part and counts the most."},
+    {q:"What is the grade scale?",a:"The grade scale runs from 1 (lowest) to 6 (highest). To achieve higher than grade 1, you MUST show competence in ALL three parts."},
+    {q:"What does it mean if examiners notice a large variation in writing style?",a:"If parts of your answer appear not to have been written by you – for example if Parts 2 and 3 are at very different levels – examiners may question whether it is all your own work. Everything you submit must be genuinely your own."},
+    {q:"What happens if I do not answer all parts?",a:"To achieve higher than grade 1 you MUST show competence in all three parts. If you skip Part 1, you cannot achieve full competence."},
+    {q:"How many words should I write in Part 2?",a:"Approx. 150 words. This is not an absolute limit, but aim for this."},
+    {q:"How many words should I write in Part 3?",a:"Approx. 300–700 words. Shorter than 300 is likely too little to show full competence."},
+    {q:"Can I choose which task to answer in Part 3?",a:"Yes. You choose one of three tasks: A, B or C. Read all three carefully and choose the one that suits you best."},
+    {q:"What is a mind map (tankekart)?",a:"A mind map is a planning method. Write the topic in the middle and note ideas, examples and key words around it. Draw lines between connected ideas. It helps you structure your text."},
+    {q:"What are linking words?",a:"Linking words are words and phrases you use to connect sentences and paragraphs. Examples: 'First of all', 'In addition', 'However', 'In conclusion'. They make your text more fluent."},
+    {q:"What is a writing frame (skriveramme)?",a:"A writing frame is a structure to help you plan your text. It shows you how to start an introduction, build the main body and conclude. See the Tips tab for examples."},
+    {q:"Must I cite sources?",a:"Yes, if you use information from the internet or books, you MUST cite your sources. Write the author's name and title, or the web address and date. Exam answers are checked for plagiarism."},
+    {q:"Are my answers saved automatically?",a:"Yes. Answers are saved automatically as you go. You do not need to press 'save'."},
+    {q:"How do I submit the exam?",a:"Click 'LEVER' and then 'AVSLUTT OG LEVER'. You will see these buttons in the exam system."},
+    {q:"Can I go back and change my answers?",a:"Yes, you can go back and change your answers up until you click 'AVSLUTT OG LEVER'."},
+    {q:"What if the computer crashes during the exam?",a:"Contact the exam supervisor at the school immediately. Your answers are saved automatically, so you will not lose your work."},
+    {q:"What if I do not understand a word in the task?",a:"Use your dictionary. Try to understand the context of the sentence. Do not use Google Translate – it is forbidden."},
+    {q:"What are the most important tips for doing well?",a:"1) Read all tasks carefully. 2) Answer EVERYTHING the task asks for. 3) Use your preparation notes. 4) Structure with introduction, body and conclusion. 5) Use linking words. 6) Re-read and correct your text. 7) Manage your time."}
+  ]
+},
+ar:{
+  langName:"العربية",dir:"rtl",
+  heroTitle:"ENGV010 – الامتحان والامتحان التجريبي",
+  heroDesc:"معلومات مهمة حول الامتحان والامتحان التجريبي (tentamen) لـ ENGV010 اللغة الإنجليزية الوحدة 4.",
+  tabInfo:"📋 الامتحان",tabPrep:"📅 يوم التحضير",tabRules:"⚠️ القواعد",tabGrades:"🎯 التقييم",tabTips:"💡 نصائح",tabFaq:"❓ أسئلة",
+  overviewTitle:"نظرة عامة على الامتحان",
+  ovDuration:"5 سا",ovDurationLabel:"المجموع",ovD1:"الجزء 1",ovD1Label:"30% · 1.5 سا",ovD2:"الجزء 2",ovD2Label:"30% · 1.5 سا",ovD3:"الجزء 3",ovD3Label:"40% · ساعتان",
+  p1Title:"الجزء 1 – فهم المقروء",p1Time:"حوالي 1.5 ساعة",p1Weight:"30%",
+  p1Desc:`<p>يختبر الجزء 1 <strong>مهارات الاستقبال</strong> لديك – قدرتك على قراءة وفهم النصوص الإنجليزية.</p><ul><li>لا تكتب إجاباتك بنفسك. تحل المهام بـ:<ul><li>النقر على خيار الإجابة الصحيح</li><li>النقر على كلمات أو جمل في النص</li><li>سحب الفقرات إلى الترتيب الصحيح</li></ul></li><li>هناك <strong>مهام كثيرة</strong> في الجزء 1 – نظّم وقتك جيداً.</li><li>عدة مهام مرتبطة بـ <strong>موضوع مواد التحضير</strong>.</li><li>يُصحَّح الجزء 1 <strong>تلقائياً</strong> من قبل النظام.</li><li>الوقت الموصى به: حوالي <strong>1.5 ساعة</strong>.</li></ul>`,
+  p2Title:"الجزء 2 – نقل المعلومات والتفاعل مع النص",p2Time:"حوالي 1.5 ساعة",p2Weight:"30%",
+  p2Desc:`<p>يختبر الجزء 2 قدرتك على <strong>نقل محتوى</strong> ما تشاهده/تسمعه والتعبير عن آرائك الخاصة.</p><ul><li>تشاهد وتسمع <strong>مقطع فيديو</strong> – تذكر السماعات!</li><li>يمكنك <strong>إيقاف الفيديو وتشغيله</strong> عدة مرات.</li><li>المهمة لها <strong>ثلاث نقاط</strong>:<ul><li>النقطتان 1 و2: أعد نقل معلومات من الفيديو بكلماتك الخاصة</li><li>النقطة 3: أعطِ <strong>آراءك وأفكارك الشخصية الخاصة</strong></li></ul></li><li>اكتب حوالي <strong>150 كلمة</strong>.</li><li>يقيّم إجابتك <strong>مصححان اثنان</strong>.</li><li>الوقت الموصى به: حوالي <strong>1.5 ساعة</strong>.</li></ul>`,
+  p3Title:"الجزء 3 – الكتابة",p3Time:"حوالي ساعتين",p3Weight:"40%",
+  p3Desc:`<p>الجزء 3 هو الجزء <strong>الأصعب والأهم</strong> (40% من الدرجة). هنا تُظهر قدرتك على كتابة نصوص إنجليزية طويلة.</p><ul><li>تختار <strong>واحدة من ثلاث مهام</strong> (أ، ب، أو ج).</li><li>يمكنك استخدام معلومات من مواد التحضير وتجاربك الشخصية.</li><li>قد يُطلب منك <strong>المناقشة، التدليل، التأمل</strong> أو ما شابه.</li><li>اكتب حوالي <strong>300–700 كلمة</strong>.</li><li>قسّم نصك: <strong>مقدمة + جسم رئيسي (2–3 فقرات) + خاتمة</strong>.</li><li>يقيّم إجابتك <strong>مصححان اثنان</strong>.</li><li>الوقت الموصى به: حوالي <strong>ساعتين</strong>.</li></ul>`,
+  prepTitle:"يوم التحضير",
+  prepIntro:"يوجد يوم تحضير قبل هذا الامتحان. المواد التحضيرية متاحة من الساعة <strong>09:00</strong>. يمكنك إحضار ملاحظاتك إلى الامتحان – لكنها ليست جزءاً من إجابتك.",
+  prepItems:[
+    {icon:"🤝",title:"التعاون",desc:"يمكنك العمل مع طلاب آخرين ومناقشة الموضوع في وقت التحضير."},
+    {icon:"📝",title:"الملاحظات وخرائط الذهن",desc:"يمكنك تدوين الملاحظات وإنشاء خرائط ذهنية حول الموضوع."},
+    {icon:"🤔",title:"التفكير والتأمل",desc:"فكّر فيما تعرفه بالفعل عن الموضوع وتجاربك الشخصية التي يمكنك استخدامها يوم الامتحان."},
+    {icon:"📖",title:"التدرب على القواميس",desc:"تدرب على استخدام القواميس والأدوات المساعدة المتاحة لك في الامتحان."},
+    {icon:"✍️",title:"التدرب على بنية النص",desc:"تدرب على إنشاء العناوين والفقرات وهيكلة النصوص بمقدمة وجسم وخاتمة."},
+    {icon:"💡",title:"مراجعة Its Learning",desc:"راجع المهام والأعمال السابقة في Its Learning. تدرب على كتابة نصوص إنجليزية بهيكل جيد."}
+  ],
+  prepNote:"يمكن للمعلم إرشادك في وقت التحضير لكن لا يُدرّس. ما يُقيَّم هو الكفاءة التي تُظهرها <strong>يوم الامتحان</strong>.",
+  rulesTitle:"قواعد الامتحان",
+  allowedTitle:"✅ مسموح",notAllowedTitle:"❌ غير مسموح",
+  allowed:["القواميس والكتب (بدون إنترنت)","بعض الأدوات الإلكترونية المعتمدة من المدرسة","سماعات الأذن (ضرورية للجزء 2)","ملاحظاتك من يوم التحضير"],
+  notAllowed:["برامج الترجمة (Google Translate, DeepL)","الهاتف المحمول وأدوات التواصل","الذكاء الاصطناعي (AI) لإنشاء الإجابات","أدوات الكتابة المشتركة والدردشة"],
+  sourcesTitle:"📌 المصادر",
+  sourcesDesc:"يجب ذكر المصادر التي تستخدمها. اكتب اسم المؤلف والعنوان، أو عنوان الموقع والتاريخ. يجب أن يكون هناك فرق واضح بين أفكارك الخاصة وما اقتبسته من مصادر أخرى. تُفحص إجاباتك بحثاً عن الانتحال.",
+  deliveryTitle:"📤 تسليم الامتحان",
+  deliveryDesc:"تُحفظ إجاباتك تلقائياً أثناء الكتابة. للتسليم، انقر على «LEVER» ثم «AVSLUTT OG LEVER»:",
+  gradesTitle:"التقييم والدرجات",
+  gradeIntro:"يقوم اثنان من المصححين بتقييم إجاباتك (الجزء 2 و3). سلّم الدرجات من 1 إلى 6. للحصول على أكثر من درجة 1، يجب إظهار الكفاءة في الأجزاء الثلاثة جميعها.",
+  gradeScaleLabel:"سلّم الدرجات:",
+  gradeWarningTitle:"⚠️ مهم جداً",
+  gradeWarning:"إذا لاحظ المصححون تبايناً كبيراً في أسلوب الكتابة بين الجزء 2 والجزء 3 – مثل أن أجزاء تبدو غير مكتوبة منك – قد يؤثر ذلك على تقييمك. يجب أن يكون كل ما تسلّمه من عملك الخاص.",
+  gradeSections:[
+    {title:"الجزء 2 – ماذا يميز كل درجة؟",items:[
+      {grade:"2",label:"درجة 2 – أساسي",
+       desc:"تنقل المعلومات بطريقة بسيطة. تستجيب للنص باختصار وبساطة. بنية النص غير واضحة أو بسيطة.",
+       ex:"مثال: تعيد ذكر بعض حقائق الفيديو بجمل بسيطة، لكن لا تجيب على النقاط الثلاث ولا تضيف آراءك الخاصة."},
+      {grade:"4",label:"درجة 4 – متوسط جيد",
+       desc:"تنقل المعلومات بشكل جيد. تعبّر عن وجهة نظرك إلى حد ما. بنية منطقية في معظمها.",
+       ex:"مثال: تنقل النقاط الرئيسية من الفيديو، تجيب على النقاط الثلاث، وتضيف أفكارك الخاصة. البنية واضحة بشكل عام."},
+      {grade:"6",label:"درجة 6 – ممتاز",
+       desc:"تنقل المعلومات بشكل ممتاز. جمل مستقلة في معظمها. تستجيب للنص بشكل كامل. إملاء صحيح.",
+       ex:"مثال: تنقل الفيديو بدقة وشمولية، تجيب على كل النقاط بآراء شخصية محررة جيداً، النص يسير بسلاسة، وأخطاء نادرة جداً."}
+    ]},
+    {title:"الجزء 3 – ماذا يميز كل درجة؟",items:[
+      {grade:"2",label:"درجة 2 – أساسي",
+       desc:"الإجابة ذات صلة جزئياً. تعالج الموضوع بشكل سطحي. مفردات أساسية. بعض الانسيابية والتماسك.",
+       ex:"مثال: تكتب بعض الجمل عن الموضوع دون عمق. هناك أخطاء كثيرة ويفتقر النص إلى هيكل واضح."},
+      {grade:"4",label:"درجة 4 – متوسط جيد",
+       desc:"الإجابة ذات صلة. تعالج الموضوع باستقلالية وإبداع إلى حد ما. مفردات عامة مع تعبيرات مناسبة. بنية منطقية.",
+       ex:"مثال: تكتب نصاً بمقدمة وجسم وخاتمة. تستخدم أدوات الربط وتناقش الموضوع بآراء خاصة بك."},
+      {grade:"6",label:"درجة 6 – ممتاز",
+       desc:"الإجابة ذات صلة وشاملة. مستقل وناقد. مفردات واسعة ومتنوعة. تدفق متواصل.",
+       ex:"مثال: نص منظم تنظيماً ممتازاً مع مقدمة واضحة وفقرات متطورة وخاتمة مقنعة. أدوات ربط متنوعة. مفردات دقيقة وواسعة."}
+    ]}
+  ],
+  tipsTitle:"نصائح للامتحان",
+  tips:[
+    {n:1,title:"الجزء 1 – القراءة: نصائح",
+     text:`<p>الجزء 1 يختبر قدرتك على فهم النصوص. لا تكتب إجابات – انقر أو اسحب.</p><ul><li>اقرأ كل سؤال بعناية قبل الإجابة. افهم ما يُطلب منك.</li><li>يمكنك التنقل للأمام والخلف بين الأسئلة.</li><li>إذا كان السؤال صعباً، <strong>تخطّاه وعُد إليه لاحقاً</strong>.</li><li>الجواب دائماً موجود في النص – اقرأ بعناية.</li></ul>`},
+    {n:2,title:"الجزء 2 – نقل المعلومات: نصائح",
+     text:`<p>الجزء 2 يختبر قدرتك على فهم فيديو وإعادة نقل محتواه والتعبير عن آرائك.</p><ul><li><strong>شاهد الفيديو وأنصت إليه عدة مرات.</strong> يمكنك إيقافه وتشغيله متى شئت – استخدم هذه الفرصة!</li><li>دوّن <strong>كلمات مفتاحية</strong> أثناء المشاهدة. يساعدك هذا على تذكر أهم النقاط.</li><li>اقرأ المهمة بعناية – يجب أن تجيب على <strong>النقاط الثلاث جميعها</strong> – لا تنسَ أياً منها!</li><li>النقطتان 1 و2: أعد نقل معلومات الفيديو بكلماتك الخاصة.</li><li>النقطة 3: <strong>آراءك الشخصية الخاصة</strong> – ماذا تعتقد أنت؟ ما رأيك في الموضوع؟</li><li>اكتب حوالي <strong>150 كلمة</strong>.</li><li>استخدم إطار الكتابة وأدوات الربط (انظر النصائح 5 و6)!</li></ul>`},
+    {n:3,title:"الجزء 3 – الكتابة: نصائح",
+     text:`<p>الجزء 3 هو الأهم (40%). اكتب نصاً مستقلاً ومنظماً.</p><ul><li><strong>اقرأ المهام الثلاث (أ، ب، ج) بعناية.</strong> اختر ما يناسبك أكثر.</li><li><strong>اقرأ المهمة التي اخترتها مرة أخرى.</strong> ماذا يطلب منك؟ أجب على كل ما طُلب.</li><li>خطط للنص: اكتب كلمات مفتاحية وأفكاراً أولاً.</li><li>صمّم <strong>خريطة ذهنية (tankekart)</strong>: اكتب الموضوع في المنتصف، ارسم خطوطاً إلى الأفكار، اربط الأفكار المتشابهة.</li><li>قسّم نصك: <strong>مقدمة + جسم رئيسي (2–3 فقرات) + خاتمة</strong>.</li><li>اكتب حوالي <strong>300–700 كلمة</strong>.</li><li>أوقف نفسك و<strong>راجع نصك</strong> أثناء الكتابة (انظر قائمة التحقق في النصيحة 7).</li></ul>`},
+    {n:4,title:"الأفعال المستخدمة في مهام الامتحان",
+     text:`<p style="margin-bottom:8px">هذه الأفعال تُستخدم كثيراً في تعليمات المهام. <strong>افهم معناها جيداً</strong> – هذا أساسي للإجابة الصحيحة!</p>${VERB_TABLE}`},
+    {n:5,title:"إطار الكتابة – كيف تنظم نصك",
+     text:`<p style="margin-bottom:8px">استخدم هذا الإطار للتخطيط للكتابة في الجزأين 2 و3:</p>${SKRIVERAMME}`},
+    {n:6,title:"أدوات الربط – Linking Words",
+     text:`<p style="margin-bottom:8px">تنويع أدوات الربط يجعل نصك أكثر <strong>سلاسة وتماسكاً</strong>. إليك أمثلة كثيرة:</p>${BINDEORD_TABLE}`},
+    {n:7,title:"مراجعة النص – قائمة التحقق",
+     text:`<p style="margin-bottom:8px">أوقف نفسك <strong>أثناء الكتابة</strong> واسأل نفسك هذه الأسئلة:</p><ul class="chk-list"><li>هل يحتوي النص على <strong>عنوان ومقدمة</strong>؟</li><li>هل النص مقسم إلى <strong>فقرات</strong>؟ هل تلتزم بموضوع واحد في كل فقرة؟</li><li>هل يوجد <strong>تماسك وترابط</strong> جيد في النص؟</li><li>هل تستخدم <strong>أدوات الربط</strong> لربط الجمل والفقرات؟</li><li>هل يحتوي النص على <strong>خاتمة</strong> تلخص أو تستنتج؟</li></ul>`}
+  ],
+  faqTitle:"أسئلة شائعة",
+  faqs:[
+    {q:"ما الفرق بين الامتحان والامتحان التجريبي (tentamen)؟",a:"الامتحان التجريبي للتدريب فقط. الدرجة لا تُحتسب في الشهادة. الامتحان الرسمي هو الذي تُحتسب درجته."},
+    {q:"ما هو يوم التحضير؟",a:"يوم مدرسي قبل الامتحان. المواد متاحة من الساعة 09:00. يمكنك التعاون وأخذ ملاحظات. يمكنك إحضار ملاحظاتك للامتحان لكنها ليست جزءاً من إجابتك."},
+    {q:"ما هي الأجزاء الثلاثة للامتحان؟",a:"الجزء 1: فهم المقروء (30%, 1.5 ساعة) – نقر/سحب، تصحيح تلقائي. الجزء 2: نقل المعلومات (30%, 1.5 ساعة) – شاهد فيديو، اكتب ~150 كلمة. الجزء 3: الكتابة (40%, ساعتان) – اختر مهمة واحدة، اكتب 300–700 كلمة."},
+    {q:"هل أحتاج إلى سماعات؟",a:"نعم. في الجزء 2 ستشاهد وتسمع فيديو. السماعات ضرورية. تذكر إحضار السماعات والشاحن."},
+    {q:"هل يمكنني استخدام Google Translate؟",a:"لا. محظور تماماً استخدام برامج الترجمة في الامتحان."},
+    {q:"هل يمكنني استخدام الذكاء الاصطناعي (AI)؟",a:"لا. محظور استخدام AI لإنشاء محتوى الإجابات. كل ما تسلّمه يجب أن يكون من عملك الخاص."},
+    {q:"هل يمكنني استخدام القاموس؟",a:"نعم. القواميس والأدوات التي لا تحتاج إنترنت مسموح بها. بعض الأدوات الإلكترونية المعتمدة قد تكون متاحة أيضاً."},
+    {q:"هل يمكنني استخدام الهاتف؟",a:"لا. الهاتف المحمول ممنوع أثناء الامتحان."},
+    {q:"من يصحح الامتحان؟",a:"مصححان اثنان يقيّمان الجزأين 2 و3. الجزء 1 يُصحَّح تلقائياً."},
+    {q:"كيف يتوزع وزن الأجزاء؟",a:"الجزء 1: 30%، الجزء 2: 30%، الجزء 3: 40%. الجزء 3 هو الأهم."},
+    {q:"كم عدد الكلمات في الجزء 2؟",a:"حوالي 150 كلمة."},
+    {q:"كم عدد الكلمات في الجزء 3؟",a:"حوالي 300–700 كلمة. أقل من 300 غالباً غير كافٍ لإظهار الكفاءة الكاملة."},
+    {q:"هل يمكنني اختيار مهمة الجزء 3؟",a:"نعم. اختر واحدة من ثلاث: أ، ب، أو ج. اقرأ الثلاثة بعناية واختر ما يناسبك."},
+    {q:"ما هي أدوات الربط؟",a:"كلمات وعبارات تستخدمها لربط الجمل والفقرات. أمثلة: 'First of all', 'In addition', 'However', 'In conclusion'. تجعل نصك أكثر سلاسة. انظر النصيحة 6."},
+    {q:"ما هو إطار الكتابة (Skriveramme)؟",a:"هيكل لمساعدتك على تخطيط نصك. يوضح كيف تبدأ المقدمة وتبني الجسم الرئيسي وتختتم. انظر قسم النصائح للأمثلة."},
+    {q:"هل يجب ذكر المصادر؟",a:"نعم. إذا استخدمت معلومات من الإنترنت أو الكتب يجب ذكر المصادر. عدم ذكرها قد يؤثر سلباً على تقييمك."},
+    {q:"هل تُحفظ إجاباتي تلقائياً؟",a:"نعم. تُحفظ الإجابات تلقائياً أثناء الكتابة. لا تحتاج إلى الضغط على 'حفظ'."},
+    {q:"كيف أسلّم الامتحان؟",a:"انقر على «LEVER» ثم «AVSLUTT OG LEVER». ستجد هذين الزرين في نظام الامتحان."},
+    {q:"هل يمكنني العودة لتغيير إجاباتي؟",a:"نعم. يمكنك العودة وتغيير إجاباتك حتى تنقر على 'AVSLUTT OG LEVER'."}
+  ]
+},
+ku:{
+  langName:"Kurmancî",dir:"ltr",
+  heroTitle:"ENGV010 – Ezmûn û Ezmûna Pratîkê",
+  heroDesc:"Agahiyên girîng ên derbarê ezmûn û tentamen ENGV010 Îngilîzî Modûla 4.",
+  tabInfo:"📋 Ezmûn",tabPrep:"📅 Amadekarî",tabRules:"⚠️ Rêgez",tabGrades:"🎯 Not",tabTips:"💡 Şîret",tabFaq:"❓ Pirs",
+  overviewTitle:"Nêrîna Giştî ya Ezmûnê",
+  ovDuration:"5 saet",ovDurationLabel:"Bi tevahî",ovD1:"Beş 1",ovD1Label:"30% · 1.5 saet",ovD2:"Beş 2",ovD2Label:"30% · 1.5 saet",ovD3:"Beş 3",ovD3Label:"40% · 2 saet",
+  p1Title:"Beş 1 – Têgihîştina Xwendinê",p1Time:"~1.5 saet",p1Weight:"30%",
+  p1Desc:`<p>Beş 1 <strong>têgihîştina xwendina</strong> te dipirse – şiyana xwendin û têgihîştina tekstên Îngilîzî.</p><ul><li>Tu <strong>NANIVÎSÎ</strong> bi peyvên xwe. Karên bi:<ul><li>Bikirtîna vebijarka rast</li><li>Bikirtîna peyvan an hevokên di tekstê de</li><li>Kişandina û avêtina paragrafan di rêza rast de</li></ul></li><li>Di Beşa 1 de <strong>gelek kar</strong> hene – waqtê xwe baş plan bike.</li><li>Beş 1 ji aliyê pergalê ve <strong>bixweber</strong> tê nirxandin.</li><li>Waqta pêşniyarkirî: ~<strong>1.5 saet</strong>.</li></ul>`,
+  p2Title:"Beş 2 – Veguhestina Agahiyê û Têkiliya Tekstê",p2Time:"~1.5 saet",p2Weight:"30%",
+  p2Desc:`<p>Beş 2 dipirse ka tu dikarî <strong>naveroka vîdyoyê veguhêzî</strong> û nêrîna xwe bidî.</p><ul><li>Vîdyoyek <strong>temaşe bike û bibihîze</strong> – guhê serê xwe ji bîr neke!</li><li>Dikarî vîdyoyê <strong>rawestî û ji nû ve dest pê bikî</strong> – gelek caran bikar bîne!</li><li>Karê <strong>sê xal</strong> hene:<ul><li>Xal 1 û 2: Agahiyên vîdyoyê bi peyvên xwe veguhêze</li><li>Xal 3: <strong>Nêrîna xwe ya kesane</strong> bide</li></ul></li><li>~<strong>150 peyv</strong> binivîse.</li><li>Du nirxandêr bersiva te dinirxînin.</li></ul>`,
+  p3Title:"Beş 3 – Nivîsandina Serbixwe",p3Time:"~2 saet",p3Weight:"40%",
+  p3Desc:`<p>Beş 3 (<strong>40%</strong>) girîngtirîn û dijwartirîn beş e. Tu li vir şiyana nivîsandina tekstên Îngilîzî yên dirêjtir nîşan didî.</p><ul><li>Ji sê karan <strong>yek hildibijêrî</strong> (A, B an C).</li><li>Dikarî agahiyên ji materyalên amadekariyê û <strong>serpêhatiyên xwe yên kesane</strong> bikar bînî.</li><li>Dibe ku ji te were xwestin ku <strong>nîqaş bikî, delîl bîyî, refleksiyonê bikî</strong>.</li><li>~<strong>300–700 peyv</strong> binivîse.</li><li>Tekstê dabeş bike: <strong>destpêk + naveroka sereke (2–3 paragraf) + dawî</strong>.</li><li>Du nirxandêr bersiva te dinirxînin.</li></ul>`,
+  prepTitle:"Roja Amadekariyê",
+  prepIntro:"Beriya vê ezmûnê rojek amadekariyê heye. Materyalên amadekariyê ji <strong>09:00</strong> peyda dibin. Dikarî notên xwe bîne ezmûnê – lê ew beşek ji bersiva ezmûnê nîn in.",
+  prepItems:[
+    {icon:"🤝",title:"Hevkarî",desc:"Dikarî bi xwendekarên din re bixebitî û di dema amadekariyê de mijarê nîqaş bikî."},
+    {icon:"📝",title:"Not û nexşeyên hişî",desc:"Not bigire û nexşeyên hişî çêbike û têgehin û ramanên girîng binivîse."},
+    {icon:"🤔",title:"Ramandin",desc:"Bifikire ka li ser mijarê çi dizanî û kîjan serpêhatiyên kesane yên xwe dikarî bikar bînî."},
+    {icon:"📖",title:"Pratîka ferhengan",desc:"Bikaranîna ferhengên ku di ezmûnê de peyda dibin pratîk bike."},
+    {icon:"✍️",title:"Pratîka avahiya tekstê",desc:"Çêkirina sernavên, paragrafan û avahiya baş ya tekstê pratîk bike."},
+    {icon:"💡",title:"Its Learning binêre",desc:"Karên berê yên Its Learning dîsa bibîne. Bi nivîsandina tekstên Îngilîzî yên bi avahiya baş pratîk bike."}
+  ],
+  prepNote:"Mamoste dikare te rênîşan bide lê nikare hîn bike. Têkilî li roja <strong>ezmûnê</strong> tê nirxandin – ne ya roja amadekariyê.",
+  rulesTitle:"Rêgezên Ezmûnê",
+  allowedTitle:"✅ Destûr heye",notAllowedTitle:"❌ Destûr nîne",
+  allowed:["Ferheng û pirtûk (bêyî înternet)","Hin amûrên înternetê yên dibistanê pejirandî","Guh (ji bo Beş 2 pêwîst e)","Notên te ji roja amadekariyê"],
+  notAllowed:["Bernameên wergêranê (Google Translate, DeepL)","Telefona desta û amûrên ragihandinê","Jêhatîbûna çêkirî (AI) ji bo berhevkirina bersivan","Amûrên nivîsandina hevbeş û chatê"],
+  sourcesTitle:"📌 Çavkanî",
+  sourcesDesc:"Divê çavkaniyên ku bikar tînî binivîsî. Navê nivîskar û sernivîsê, an navnîşana malpera û rêzê binivîse. Dibe ku bersivên ezmûnê ji bo diziya nivîsê were kontrol kirin.",
+  deliveryTitle:"📤 Radestkirinê",
+  deliveryDesc:"Bersiv bixweber têne hilînin. «LEVER» bikirtîne û paşê «AVSLUTT OG LEVER»:",
+  gradesTitle:"Not û Nirxandin",
+  gradeIntro:"Du nirxandêr bersivên te dinirxînin (Beş 2 û 3). Rêza noten ji 1 heta 6. Ji 1 zêdetir ji bo bistînî, divê di her sê beşan de şiyanê nîşan bidî.",
+  gradeScaleLabel:"Rêza noten:",
+  gradeWarningTitle:"⚠️ Girîng",
+  gradeWarning:"Heke nirxandêr cûdahiyeke mezin di şêwaza nivîsandinê de ya Beş 2 û 3 bibînin – wek ku beşek ji te re nexuyê – dikare bandora nirxandina te bike. Divê her tiştê ku pêşkêş dikî ji te be.",
+  gradeSections:[
+    {title:"Beş 2 – Çi taybetmendiyên her notê ne?",items:[
+      {grade:"2",label:"Not 2 – Bingehîn",desc:"Agahiyê bi awayekî sade veguhêze. Bersiv kurt û sade ye. Avahiya tekstê hêj ne zelal e.",ex:"Mînak: Hin agahiyên vîdyoyê bi hevokên sade vediguhere, lê sê xalan hemî bersiv nade û nêrîna xwe nekiriye."},
+      {grade:"4",label:"Not 4 – Navîn baş",desc:"Agahiyê baş veguhêze. Heta radeyekê nêrîna xwe nîşan dide. Avahiya tekstê bi piranî mantiqî ye.",ex:"Mînak: Sê xalên hemî bersiv dide û nêrîna xwe ya kesane jî lê zêde kiriye. Avahî bi piranî zelal e."},
+      {grade:"6",label:"Not 6 – Pir baş",desc:"Agahiyê pir baş veguhêze. Hevokên serbixwe nîşan dide. Bi tevahî bersiv dide. Rastnivîsîn rast e.",ex:"Mînak: Vîdyoya bi rastî û bi tevahî veguhêze, hemî xalan bi nêrînên xwe yên baş nivîsandî bersiv dide, û nêzî tu xeletî tune ye."}
+    ]},
+    {title:"Beş 3 – Çi taybetmendiyên her notê ne?",items:[
+      {grade:"2",label:"Not 2 – Bingehîn",desc:"Bersiv heta radeyekê têkildar e. Mijar bi rûkhalî tê peravêtin. Ferhengeke bingehîn. Hin qulqulbûn û girêdan.",ex:"Mînak: Li ser mijarê bi rûkhalî tê nivîsandin, gelek xelat, û avahiya zelal tune ye."},
+      {grade:"4",label:"Not 4 – Navîn baş",desc:"Bersiv têkildar e. Bi piranî bi awayekî serbixwe û afirîner an rexnegir e. Ferhengeke giştî. Avahiya mantiqî.",ex:"Mînak: Tekstekî bi destpêk, naverok û dawiyê heye. Peyvên girêdanê têne bikaranîn û nêrînên kesane hene."},
+      {grade:"6",label:"Not 6 – Pir baş",desc:"Bersiv têkildar û temam e. Serbixwe û rexnegir e. Ferhengeke berfireh û cûrbecûr. Qulqulbûna berdewam.",ex:"Mînak: Tekstekî bi awayekî pir baş sêwirandî bi destpêkeke zelal, paragrafên baş pêşxistî û dawiyeke qanêkirî heye."}
+    ]}
+  ],
+  tipsTitle:"Şîretên Ezmûnê",
+  tips:[
+    {n:1,title:"Beş 1 – Xwendin: Şîret",
+     text:`<p>Beş 1 têgihîştina tekstan dipirse. NANIVÎSÎ – bikirtîne an bixêne.</p><ul><li>Her pirsê <strong>bi baldarî</strong> bixwîne berî ku bersiv bidî.</li><li>Dikarî <strong>ber û paş</strong> di navbera pirsan de bizivî.</li><li>Pirsa dijwar derbas bike û <strong>paşê vegere</strong> wê.</li><li>Bersiv her gav di tekstê de ye – baş bixwîne.</li></ul>`},
+    {n:2,title:"Beş 2 – Veguhestin: Şîret",
+     text:`<p>Beş 2 têgihîştin û veguhestina naveroka vîdyoyê dipirse.</p><ul><li><strong>Vîdyoya gelek caran temaşe bike û bibihîze.</strong> Dikarî rawestî – vê fersendê bikar bîne!</li><li>Di dema temaşekirinê de <strong>peyvên sereke</strong> binivîse.</li><li>Karê <strong>sê xalên hemî</strong> bersiv bide – tu yekê ji bîr neke!</li><li>Xal 3: <strong>Nêrîna te ya kesane</strong> – tu çi difikiri? Nêrîna te ya mijarê çi ye?</li><li>~<strong>150 peyv</strong>. Ne pir kêm, ne pir dirêj.</li></ul>`},
+    {n:3,title:"Beş 3 – Nivîsandin: Şîret",
+     text:`<p>Beş 3 (<strong>40%</strong>) girîngtirîn beş e. Teksteke serbixwe û rêkûpêk binivîse.</p><ul><li><strong>Sê karan hemî bixwîne</strong> û ê herî baş ji te re hildibijêre.</li><li>Karê xwe yê hilbijartî <strong>dîsa bixwîne</strong>. Çi tê xwestin? Li her tiştê bersiv bide.</li><li>Plan bike: berî destpêkirinê <strong>peyvên sereke û raman</strong> binivîse.</li><li><strong>Nexşeya hişî (tankekart)</strong> çêbike: mijara navîn binivîse, strêkên li derdora wê bixêne, ramanên girêdayî bi hev ve bike.</li><li>Tekstê dabeş bike: <strong>destpêk + naverok (2–3 paragraf) + dawî</strong>.</li><li>~<strong>300–700 peyv</strong>.</li><li>Rawest û <strong>tekstê xwe dîsa bixwîne</strong> (xala kontrolê binêre).</li></ul>`},
+    {n:4,title:"Peyvên karên ezmûnê (Norveçî/Îngilîzî)",
+     text:`<p style="margin-bottom:8px">Ev peyv bi gelemperî di rêwerzên karên ezmûnê de têne bikaranîn. <strong>Maneya wan baş fêm bike!</strong></p>${VERB_TABLE}`},
+    {n:5,title:"Çarçoveya Nivîsandinê (Skriveramme)",
+     text:`<p style="margin-bottom:8px">Ev çarçove di Beş 2 û Beş 3 de ji bo plan û nivîsandina tekstê bikar bîne:</p>${SKRIVERAMME}`},
+    {n:6,title:"Peyvên Girêdanê (Bindeord / Linking Words)",
+     text:`<p style="margin-bottom:8px">Cûrbecûriya peyvên girêdanê tekstê <strong>ronîtir û girêdayîtir</strong> dike:</p>${BINDEORD_TABLE}`},
+    {n:7,title:"Vekolîna Tekstê – Xala Kontrolê",
+     text:`<p style="margin-bottom:8px">Di dema nivîsandinê de rawest û xwe bipirse:</p><ul class="chk-list"><li>Ma tekstê <strong>sernivîs û destpêk</strong> heye?</li><li>Ma tekstê li <strong>paragravan</strong> dabeş kiriye? Ma di her paragrafê de mijarek heye?</li><li>Ma di tekstê de <strong>girêdan û hevgirtinek</strong> baş heye?</li><li>Ma <strong>peyvên girêdanê</strong> bikar tînî?</li><li>Ma tekstê <strong>dawî</strong> heye ku kurt dike an encam dide?</li></ul>`}
+  ],
+  faqTitle:"Pirsên Gelemperî",
+  faqs:[
+    {q:"Ferqa ezmûn û tentamen çi ye?",a:"Tentamen ezmûneke pratîkê ye. Nota NAYÊ hesibandin. Fersendeke baş e ku amade bibî û fêrî forma ezmûnê bibî."},
+    {q:"Roja amadekariyê çi ye?",a:"Rojek dibistanê ya beriya ezmûnê. Material ji 09:00 peyda dibin. Dikarî bi hev re bixebitî, not bigirî û pratîk bikî. Notên xwe dikarî bînî ezmûnê, lê beşek ji bersivê nîne."},
+    {q:"Sê beşên ezmûnê çi ne?",a:"Beş 1: Xwendin (30%, ~1.5 saet) – bikirtîn/kişandin, bixweber. Beş 2: Veguhestin (30%, ~1.5 saet) – vîdyo temaşe bike, ~150 peyv. Beş 3: Nivîsandin (40%, ~2 saet) – yekê ji sê karan hildibijêre, 300–700 peyv."},
+    {q:"Guhên serê lazim in?",a:"Erê. Di Beş 2 de vîdyoyek temaşe û dibihîzî. Guh divê hebin."},
+    {q:"Dikarî Google Translate bikar bînim?",a:"Na. Bikaranîna bernameên wergêranê di dema ezmûnê de bi tevahî qedexe ye."},
+    {q:"Dikarî AI bikar bînim?",a:"Na. Bikaranîna AI ji bo çêkirina bersivan qedexe ye. Divê her tiştê ku pêşkêş dikî ji te be."},
+    {q:"Dikarî ferhengê bikar bînim?",a:"Erê. Ferheng û amûrên bê înternet destûr tê dayê."},
+    {q:"Dikarî telefona desta bikar bînim?",a:"Na. Telefona desta di dema ezmûnê de qedexe ye."},
+    {q:"Kê ezmûnê sax dike?",a:"Du nirxandêr (Beş 2 û 3). Beş 1 bixweber tê nirxandin."},
+    {q:"Girtina her beşê çend e?",a:"Beş 1: 30%, Beş 2: 30%, Beş 3: 40%. Beş 3 girîngtirîn e."},
+    {q:"Di Beş 2 de çend peyv?",a:"~150 peyv."},
+    {q:"Di Beş 3 de çend peyv?",a:"~300–700 peyv."},
+    {q:"Dikarî kara Beş 3 hildibijêrim?",a:"Erê. A, B an C. Hemî sê bixwîne û ê herî guncan hildibijêre."},
+    {q:"Bersivên min bixweber têne hilanîn?",a:"Erê. Di dema nivîsandinê de bixweber têne hilanîn."},
+    {q:"Çawa ezmûnê radest dikim?",a:"«LEVER» bikirtîne û paşê «AVSLUTT OG LEVER»."}
+  ]
+},
+prs:{
+  langName:"دری",dir:"rtl",
+  heroTitle:"ENGV010 – امتحان و امتحان تمرینی",
+  heroDesc:"اطلاعات مهم درباره امتحان و tentamen برای ENGV010 انگلیسی ماژول 4.",
+  tabInfo:"📋 امتحان",tabPrep:"📅 آمادگی",tabRules:"⚠️ قوانین",tabGrades:"🎯 نمرات",tabTips:"💡 نکات",tabFaq:"❓ سوالات",
+  overviewTitle:"مرور کلی امتحان",
+  ovDuration:"۵ ساعت",ovDurationLabel:"مجموع",ovD1:"بخش ۱",ovD1Label:"30% · 1.5 سا",ovD2:"بخش ۲",ovD2Label:"30% · 1.5 سا",ovD3:"بخش ۳",ovD3Label:"40% · ۲ ساعت",
+  p1Title:"بخش ۱ – درک مطلب خواندن",p1Time:"حدود ۱.۵ ساعت",p1Weight:"30%",
+  p1Desc:`<p>بخش ۱ <strong>مهارت‌های درک مطلب</strong> شما را می‌آزماید – توانایی خواندن و فهمیدن متن‌های انگلیسی.</p><ul><li>شما <strong>نمی‌نویسید</strong>. وظایف با:<ul><li>کلیک کردن بر گزینه درست</li><li>کلیک کردن بر کلمات در متن</li><li>کشیدن پاراگراف‌ها به ترتیب درست</li></ul></li><li>وظایف <strong>زیادی</strong> در بخش ۱ وجود دارد – وقت خود را برنامه‌ریزی کنید.</li><li>بخش ۱ به‌طور <strong>خودکار</strong> تصحیح می‌شود.</li><li>زمان پیشنهادی: حدود <strong>۱.۵ ساعت</strong>.</li></ul>`,
+  p2Title:"بخش ۲ – انتقال اطلاعات و تعامل با متن",p2Time:"حدود ۱.۵ ساعت",p2Weight:"30%",
+  p2Desc:`<p>بخش ۲ می‌آزماید که آیا می‌توانید <strong>محتوای ویدیو را انتقال دهید</strong> و دیدگاه‌های خود را بیان کنید.</p><ul><li><strong>ویدیو را ببینید و بشنوید</strong> – هدفون را فراموش نکنید!</li><li>می‌توانید ویدیو را <strong>متوقف و دوباره پخش کنید</strong> – از این فرصت استفاده کنید!</li><li>وظیفه <strong>سه نقطه</strong> دارد:<ul><li>نقطه ۱ و ۲: اطلاعات ویدیو را با کلمات خودتان انتقال دهید</li><li>نقطه ۳: <strong>دیدگاه‌های شخصی خودتان</strong> را بدهید</li></ul></li><li>حدود <strong>۱۵۰ کلمه</strong> بنویسید.</li><li>دو ارزیاب پاسخ شما را ارزیابی می‌کنند.</li></ul>`,
+  p3Title:"بخش ۳ – نوشتن",p3Time:"حدود ۲ ساعت",p3Weight:"40%",
+  p3Desc:`<p>بخش ۳ (<strong>40%</strong>) مهم‌ترین و سخت‌ترین بخش است. اینجا توانایی نوشتن متن‌های طولانی‌تر انگلیسی را نشان می‌دهید.</p><ul><li>از سه وظیفه <strong>یکی را انتخاب می‌کنید</strong> (A، B یا C).</li><li>می‌توانید از اطلاعات مواد آمادگی و <strong>تجربیات شخصی</strong> خود استفاده کنید.</li><li>ممکن است از شما خواسته شود <strong>بحث کنید، استدلال کنید، تأمل کنید</strong>.</li><li>حدود <strong>۳۰۰–۷۰۰ کلمه</strong> بنویسید.</li><li>متن را تقسیم کنید: <strong>مقدمه + بدنه اصلی (۲–۳ پاراگراف) + نتیجه</strong>.</li><li>دو ارزیاب پاسخ شما را ارزیابی می‌کنند.</li></ul>`,
+  prepTitle:"روز آمادگی",
+  prepIntro:"یک روز آمادگی قبل از امتحان وجود دارد. مواد آمادگی از ساعت <strong>09:00</strong> در دسترس است. می‌توانید یادداشت‌هایتان را به امتحان بیاورید – اما بخشی از پاسخ امتحان نیستند.",
+  prepItems:[
+    {icon:"🤝",title:"همکاری",desc:"می‌توانید با سایر دانش‌آموزان کار کنید و درباره موضوع بحث کنید."},
+    {icon:"📝",title:"یادداشت و نقشه ذهنی",desc:"یادداشت بنویسید و نقشه‌های ذهنی درباره موضوع بسازید."},
+    {icon:"🤔",title:"تأمل",desc:"فکر کنید چه چیزهایی درباره موضوع می‌دانید و چه تجربیات شخصی دارید."},
+    {icon:"📖",title:"تمرین فرهنگ لغت",desc:"استفاده از فرهنگ لغت‌ها و ابزارهای موجود در امتحان را تمرین کنید."},
+    {icon:"✍️",title:"تمرین ساختار متن",desc:"ساختن عناوین، پاراگراف‌ها و ساختار خوب متن را تمرین کنید."},
+    {icon:"💡",title:"مرور Its Learning",desc:"وظایف و کارهای قبلی در Its Learning را مرور کنید. نوشتن متن‌های انگلیسی با ساختار خوب را تمرین کنید."}
+  ],
+  prepNote:"معلم می‌تواند راهنمایی کند اما تدریس نمی‌کند. کفاءتی که <strong>روز امتحان</strong> نشان می‌دهید ارزیابی می‌شود.",
+  rulesTitle:"قوانین امتحان",
+  allowedTitle:"✅ مجاز",notAllowedTitle:"❌ غیرمجاز",
+  allowed:["فرهنگ لغت‌ها و کتاب‌ها (بدون اینترنت)","برخی ابزارهای آنلاین تأیید شده توسط مکتب","هدفون (الزامی برای بخش ۲)","یادداشت‌های روز آمادگی"],
+  notAllowed:["برنامه‌های ترجمه (Google Translate, DeepL)","تلفون موبایل و ابزارهای ارتباطی","هوش مصنوعی (AI) برای تولید پاسخ","ابزارهای نوشتن مشترک و چت"],
+  sourcesTitle:"📌 منابع",
+  sourcesDesc:"باید منابعی که استفاده می‌کنید را ذکر کنید. نام نویسنده و عنوان، یا آدرس وب‌سایت و تاریخ را بنویسید. پاسخ‌های امتحان برای سرقت علمی بررسی می‌شوند.",
+  deliveryTitle:"📤 تسلیم امتحان",
+  deliveryDesc:"پاسخ‌ها به‌طور خودکار ذخیره می‌شوند. «LEVER» را کلیک کنید سپس «AVSLUTT OG LEVER»:",
+  gradesTitle:"نمرات و ارزیابی",
+  gradeIntro:"دو ارزیاب پاسخ‌های شما را بررسی می‌کنند (بخش ۲ و ۳). مقیاس نمرات از ۱ تا ۶. برای دریافت بیش از نمره ۱، باید در هر سه بخش کفاءت نشان دهید.",
+  gradeScaleLabel:"مقیاس نمرات:",
+  gradeWarningTitle:"⚠️ مهم",
+  gradeWarning:"اگر ارزیابان تفاوت زیادی در سبک نوشتن بین بخش ۲ و ۳ ببینند – مانند اینکه بخش‌هایی توسط شما نوشته نشده – ممکن است بر ارزیابی تأثیر بگذارد. همه چیز باید کار خودتان باشد.",
+  gradeSections:[
+    {title:"بخش ۲ – ویژگی‌های هر نمره",items:[
+      {grade:"2",label:"نمره ۲ – اساسی",desc:"اطلاعات را به روش ساده انتقال می‌دهد. پاسخ کوتاه و ساده است.",ex:"مثال: چند حقیقت از ویدیو با جملات ساده، اما به همه سه نقطه پاسخ داده نشده."},
+      {grade:"4",label:"نمره ۴ – متوسط خوب",desc:"اطلاعات را خوب انتقال می‌دهد. تا حدی دیدگاه خود را بیان می‌کند. ساختار منطقی دارد.",ex:"مثال: به هر سه نقطه پاسخ داده شده و دیدگاه‌های شخصی اضافه شده است."},
+      {grade:"6",label:"نمره ۶ – عالی",desc:"اطلاعات را بسیار خوب انتقال می‌دهد. جملات مستقل. پاسخ کامل. نگارش صحیح.",ex:"مثال: ویدیو دقیق و کامل انتقال داده، همه نقاط با دیدگاه‌های خوب پاسخ داده، نوشته روان، تقریباً بدون خطا."}
+    ]},
+    {title:"بخش ۳ – ویژگی‌های هر نمره",items:[
+      {grade:"2",label:"نمره ۲ – اساسی",desc:"پاسخ تا حدی مرتبط است. موضوع سطحی بررسی می‌شود. واژگان اساسی.",ex:"مثال: چند جمله درباره موضوع بدون عمق، خطاهای زیاد، بدون ساختار واضح."},
+      {grade:"4",label:"نمره ۴ – متوسط خوب",desc:"پاسخ مرتبط است. موضوع با استقلال و خلاقیت بررسی می‌شود. واژگان عمومی. ساختار منطقی.",ex:"مثال: متن با مقدمه، بدنه و نتیجه. از ابزارهای ربط استفاده شده و دیدگاه‌های شخصی وجود دارد."},
+      {grade:"6",label:"نمره ۶ – عالی",desc:"پاسخ مرتبط و کامل است. مستقل و انتقادی. واژگان گسترده و متنوع. جریان پیوسته.",ex:"مثال: متن بسیار خوب ساختار داده با مقدمه روشن، پاراگراف‌های توسعه‌یافته و نتیجه قانع‌کننده."}
+    ]}
+  ],
+  tipsTitle:"نکات امتحان",
+  tips:[
+    {n:1,title:"بخش ۱ – خواندن: نکات",
+     text:`<p>بخش ۱ توانایی درک مطلب شما را می‌آزماید. نمی‌نویسید – کلیک یا بکشید.</p><ul><li>هر سوال را <strong>با دقت</strong> بخوانید قبل از پاسخ دادن.</li><li>می‌توانید <strong>جلو و عقب</strong> بین سوالات حرکت کنید.</li><li>سوال سخت است؟ <strong>از آن بگذرید و بعداً برگردید</strong>.</li><li>جواب همیشه در متن است – با دقت بخوانید.</li></ul>`},
+    {n:2,title:"بخش ۲ – انتقال: نکات",
+     text:`<p>بخش ۲ درک ویدیو و انتقال محتوای آن را می‌آزماید.</p><ul><li><strong>ویدیو را چند بار ببینید و بشنوید.</strong> متوقفش کنید – از این فرصت استفاده کنید!</li><li><strong>کلمات کلیدی</strong> بنویسید در حین تماشا.</li><li>به <strong>هر سه نقطه</strong> پاسخ دهید – هیچ کدام را فراموش نکنید!</li><li>نقطه ۳: <strong>دیدگاه‌های شخصی خودتان</strong> – شما چه فکری می‌کنید؟</li><li>حدود <strong>۱۵۰ کلمه</strong>.</li></ul>`},
+    {n:3,title:"بخش ۳ – نوشتن: نکات",
+     text:`<p>بخش ۳ (<strong>40%</strong>) مهم‌ترین است. متن مستقل و سازمان‌دهی شده بنویسید.</p><ul><li><strong>هر سه وظیفه (A، B، C) را بخوانید</strong> و مناسب‌ترین را انتخاب کنید.</li><li><strong>وظیفه انتخابی را دوباره بخوانید.</strong> چه می‌خواهد؟ به همه چیز پاسخ دهید.</li><li>برنامه‌ریزی کنید: کلمات کلیدی و ایده‌ها بنویسید.</li><li><strong>نقشه ذهنی (tankekart)</strong>: موضوع در مرکز، خط به کلمات کلیدی، ایده‌های مرتبط را وصل کنید.</li><li>متن را تقسیم کنید: <strong>مقدمه + بدنه (۲–۳ پاراگراف) + نتیجه</strong>.</li><li>حدود <strong>۳۰۰–۷۰۰ کلمه</strong>.</li><li>بایستید و <strong>متن را مرور کنید</strong> (فهرست بررسی را ببینید).</li></ul>`},
+    {n:4,title:"افعال وظایف امتحان (نروژی/انگلیسی)",
+     text:`<p style="margin-bottom:8px">این افعال اغلب در دستورالعمل‌های وظایف استفاده می‌شوند. <strong>معنای آنها را خوب بفهمید!</strong></p>${VERB_TABLE}`},
+    {n:5,title:"چارچوب نوشتن (Skriveramme)",
+     text:`<p style="margin-bottom:8px">از این چارچوب برای برنامه‌ریزی نوشتن در بخش ۲ و ۳ استفاده کنید:</p>${SKRIVERAMME}`},
+    {n:6,title:"ابزارهای ربط (Bindeord / Linking Words)",
+     text:`<p style="margin-bottom:8px">استفاده متنوع از ابزارهای ربط متن را <strong>روان‌تر و منسجم‌تر</strong> می‌کند:</p>${BINDEORD_TABLE}`},
+    {n:7,title:"بازبینی متن – فهرست بررسی",
+     text:`<p style="margin-bottom:8px">در حین نوشتن بایستید و از خود بپرسید:</p><ul class="chk-list"><li>آیا متن <strong>عنوان و مقدمه</strong> دارد؟</li><li>آیا متن به <strong>پاراگراف</strong> تقسیم شده است؟</li><li>آیا <strong>انسجام و پیوستگی</strong> خوبی در متن وجود دارد؟</li><li>آیا از <strong>ابزارهای ربط</strong> استفاده می‌کنید؟</li><li>آیا متن <strong>نتیجه‌گیری</strong> دارد؟</li></ul>`}
+  ],
+  faqTitle:"سوالات متداول",
+  faqs:[
+    {q:"تفاوت امتحان و tentamen چیست؟",a:"Tentamen یک امتحان تمرینی است. نمره حساب نمی‌شود. فرصتی است برای تمرین و آمادگی."},
+    {q:"روز آمادگی چیست؟",a:"یک روز مکتب قبل از امتحان. مواد از ۰۹:۰۰ در دسترس. می‌توانید همکاری کنید، یادداشت بنویسید. یادداشت‌ها را می‌توانید بیاورید اما بخشی از پاسخ نیستند."},
+    {q:"سه بخش امتحان چیستند؟",a:"بخش ۱: خواندن (30%, ~۱.۵ سا) – کلیک/کشیدن، خودکار. بخش ۲: انتقال (30%, ~۱.۵ سا) – ویدیو ببینید، ~۱۵۰ کلمه. بخش ۳: نوشتن (40%, ~۲ سا) – یکی از سه وظیفه، ۳۰۰–۷۰۰ کلمه."},
+    {q:"آیا به هدفون نیاز دارم؟",a:"بله. در بخش ۲ ویدیو می‌بینید و می‌شنوید. هدفون ضروری است."},
+    {q:"آیا می‌توانم از Google Translate استفاده کنم؟",a:"نه. استفاده از برنامه‌های ترجمه کاملاً ممنوع است."},
+    {q:"آیا می‌توانم از AI استفاده کنم؟",a:"نه. استفاده از AI ممنوع است. همه چیز باید کار خودتان باشد."},
+    {q:"آیا می‌توانم از فرهنگ لغت استفاده کنم؟",a:"بله. فرهنگ لغت‌ها و ابزارهایی که اینترنت نیاز ندارند مجاز هستند."},
+    {q:"آیا می‌توانم از تلفون استفاده کنم؟",a:"نه. تلفون موبایل ممنوع است."},
+    {q:"چه کسی امتحان را تصحیح می‌کند؟",a:"دو ارزیاب بخش‌های ۲ و ۳ را ارزیابی می‌کنند. بخش ۱ خودکار است."},
+    {q:"وزن هر بخش چقدر است؟",a:"بخش ۱: 30%، بخش ۲: 30%، بخش ۳: 40%. بخش ۳ مهم‌ترین است."},
+    {q:"چند کلمه در بخش ۲ بنویسم؟",a:"حدود ۱۵۰ کلمه."},
+    {q:"چند کلمه در بخش ۳ بنویسم؟",a:"حدود ۳۰۰–۷۰۰ کلمه. کمتر از ۳۰۰ احتمالاً کافی نیست."},
+    {q:"آیا می‌توانم وظیفه بخش ۳ را انتخاب کنم؟",a:"بله. A، B یا C. هر سه را بخوانید و مناسب‌ترین را انتخاب کنید."},
+    {q:"آیا پاسخ‌هایم خودکار ذخیره می‌شوند؟",a:"بله. پاسخ‌ها خودکار ذخیره می‌شوند."},
+    {q:"چطور امتحان را تسلیم کنم؟",a:"«LEVER» را کلیک کنید سپس «AVSLUTT OG LEVER»."}
+  ]
+},
+sw:{
+  langName:"Kiswahili",dir:"ltr",
+  heroTitle:"ENGV010 – Mtihani na Mtihani wa Mazoezi",
+  heroDesc:"Taarifa muhimu kuhusu mtihani na tentamen wa ENGV010 Kiingereza Moduli 4.",
+  tabInfo:"📋 Mtihani",tabPrep:"📅 Maandalizi",tabRules:"⚠️ Sheria",tabGrades:"🎯 Daraja",tabTips:"💡 Vidokezo",tabFaq:"❓ Maswali",
+  overviewTitle:"Muhtasari wa Mtihani",
+  ovDuration:"Saa 5",ovDurationLabel:"Jumla",ovD1:"Sehemu 1",ovD1Label:"30% · Saa 1.5",ovD2:"Sehemu 2",ovD2Label:"30% · Saa 1.5",ovD3:"Sehemu 3",ovD3Label:"40% · Saa 2",
+  p1Title:"Sehemu 1 – Ufahamu wa Kusoma",p1Time:"~Saa 1.5",p1Weight:"30%",
+  p1Desc:`<p>Sehemu 1 inajaribu <strong>uwezo wako wa kusoma</strong> na kuelewa maandishi ya Kiingereza.</p><ul><li>Hujandikia majibu. Kazi zinafanyika kwa:<ul><li>Kubonyeza chaguo sahihi</li><li>Kubonyeza maneno au sentensi kwenye maandishi</li><li>Kuburuta aya mpaka mahali sahihi</li></ul></li><li>Kuna kazi <strong>nyingi</strong> katika Sehemu 1 – panga wakati wako vizuri.</li><li>Sehemu 1 inapitiwa <strong>kiotomatiki</strong> na mfumo.</li><li>Muda uliopendekezwa: ~<strong>Saa 1.5</strong>.</li></ul>`,
+  p2Title:"Sehemu 2 – Upitishaji wa Habari na Mwingiliano na Maandishi",p2Time:"~Saa 1.5",p2Weight:"30%",
+  p2Desc:`<p>Sehemu 2 inajaribu kama unaweza <strong>kupitisha maudhui</strong> ya video na kutoa maoni yako.</p><ul><li>Unatazama na kusikiliza <strong>video</strong> – kumbuka vipokea sauti!</li><li>Unaweza <strong>kusimamisha na kuendelea</strong> video mara nyingi.</li><li>Kazi ina <strong>pointi tatu</strong>:<ul><li>Pointi 1 na 2: Pitisha tena habari kutoka video kwa maneno yako</li><li>Pointi 3: Toa <strong>maoni yako mwenyewe ya kibinafsi</strong></li></ul></li><li>Andika ~<strong>maneno 150</strong>.</li><li>Wapima wawili wanatathmini jibu lako.</li></ul>`,
+  p3Title:"Sehemu 3 – Uandishi",p3Time:"~Saa 2",p3Weight:"40%",
+  p3Desc:`<p>Sehemu 3 (<strong>40%</strong>) ni sehemu <strong>muhimu zaidi</strong>. Unaonyesha uwezo wa kuandika maandishi marefu ya Kiingereza.</p><ul><li>Unachagua <strong>moja kati ya kazi tatu</strong> (A, B au C).</li><li>Unaweza kutumia habari kutoka maandalizi na <strong>uzoefu wako mwenyewe</strong>.</li><li>Unaweza kuulizwa <strong>kujadili, kutoa hoja, kutafakuri</strong> au mengine.</li><li>Andika ~<strong>maneno 300–700</strong>.</li><li>Gawanya: <strong>utangulizi + mwili (aya 2–3) + hitimisho</strong>.</li><li>Wapima wawili wanatathmini jibu lako.</li></ul>`,
+  prepTitle:"Siku ya Maandalizi",
+  prepIntro:"Kuna siku ya maandalizi kabla ya mtihani huu. Nyenzo zinapatikana kuanzia saa <strong>03:00 asubuhi (09:00)</strong>. Unaweza kuleta madokezo yako kwenye mtihani – lakini si sehemu ya jibu lako.",
+  prepItems:[
+    {icon:"🤝",title:"Ushirikiano",desc:"Unaweza kufanya kazi pamoja na wanafunzi wengine na kujadili mada wakati wa maandalizi."},
+    {icon:"📝",title:"Madokezo na ramani za akili",desc:"Andika madokezo na uunde ramani za akili kuhusu mada."},
+    {icon:"🤔",title:"Tafakuri",desc:"Fikiria unachojua tayari kuhusu mada na uzoefu wako mwenyewe unaoeza kutumia siku ya mtihani."},
+    {icon:"📖",title:"Mazoezi ya kamusi",desc:"Fanya mazoezi ya kutumia kamusi na zana unazopewa kwenye mtihani."},
+    {icon:"✍️",title:"Mazoezi ya muundo wa maandishi",desc:"Fanya mazoezi ya kuunda vichwa vya habari, aya na muundo mzuri wa maandishi."},
+    {icon:"💡",title:"Kagua Its Learning",desc:"Angalia kazi na maandishi ya zamani katika Its Learning. Fanya mazoezi ya kuandika kwa Kiingereza kwa muundo mzuri."}
+  ],
+  prepNote:"Mwalimu anaweza kukuongoza lakini hawezi kufundisha. Uwezo unaoonyesha <strong>siku ya mtihani</strong> ndio unaopimwa.",
+  rulesTitle:"Sheria za Mtihani",
+  allowedTitle:"✅ Inaruhusiwa",notAllowedTitle:"❌ Hairuhusiwi",
+  allowed:["Kamusi na vitabu (bila intaneti)","Baadhi ya zana za mtandaoni zilizoidhinishwa","Vipokea sauti (lazima kwa Sehemu 2)","Madokezo yako kutoka siku ya maandalizi"],
+  notAllowed:["Programu za kutafsiri (Google Translate, DeepL)","Simu ya mkononi na zana nyingine za mawasiliano","Akili Bandia (AI) kutengeneza majibu","Programu za uandishi wa pamoja na mazungumzo"],
+  sourcesTitle:"📌 Vyanzo",
+  sourcesDesc:"Lazima utaje vyanzo unavyotumia. Andika jina la mwandishi na kichwa, au anwani ya tovuti na tarehe. Majibu yanakaguliwa kwa wizi wa maandishi.",
+  deliveryTitle:"📤 Kuwasilisha Mtihani",
+  deliveryDesc:"Majibu huhifadhiwa kiotomatiki. Bonyeza «LEVER» kisha «AVSLUTT OG LEVER»:",
+  gradesTitle:"Daraja na Tathmini",
+  gradeIntro:"Wapima wawili wanatathmini majibu yako (Sehemu 2 na 3). Kipimo cha daraja ni 1 hadi 6. Ili kupata zaidi ya daraja 1, lazima uonyeshe uwezo katika sehemu ZOTE tatu.",
+  gradeScaleLabel:"Kipimo cha daraja:",
+  gradeWarningTitle:"⚠️ Muhimu",
+  gradeWarning:"Kama wapima wanaona tofauti kubwa katika mtindo wa uandishi kati ya Sehemu 2 na 3, inaweza kuathiri tathmini yako. Kila unacowasilisha lazima kiwe kazi yako mwenyewe.",
+  gradeSections:[
+    {title:"Sehemu 2 – Ni nini kinachobainisha kila daraja?",items:[
+      {grade:"2",label:"Daraja 2 – Msingi",desc:"Unapitisha habari kwa njia rahisi. Jibu ni fupi na rahisi. Muundo wa maandishi si wazi sana.",ex:"Mfano: Unaelezea baadhi ya habari za video kwa sentensi rahisi, lakini hujibu pointi zote tatu wala hutoi maoni yako mwenyewe."},
+      {grade:"4",label:"Daraja 4 – Wastani",desc:"Unapitisha habari vizuri. Unaeleza maoni yako kwa kiasi fulani. Muundo wa kimantiki.",ex:"Mfano: Unajibu pointi zote tatu na kuongeza maoni yako mwenyewe. Muundo ni wazi kwa ujumla."},
+      {grade:"6",label:"Daraja 6 – Bora",desc:"Unapitisha habari vizuri sana. Majibu ya kujitegemea. Anajibu kwa ukamilifu. Tahajia sahihi.",ex:"Mfano: Unapitisha video kwa usahihi, unajibu pointi zote kwa maoni mazuri, maandishi yanasonga vizuri, na karibu hakuna makosa."}
+    ]},
+    {title:"Sehemu 3 – Ni nini kinachobainisha kila daraja?",items:[
+      {grade:"2",label:"Daraja 2 – Msingi",desc:"Jibu lina uhusiano kwa sehemu. Linashughulikia mada juu juu. Msamiati wa msingi.",ex:"Mfano: Unaandika sentensi chache kuhusu mada bila kina, makosa mengi, na hakuna muundo wazi."},
+      {grade:"4",label:"Daraja 4 – Wastani",desc:"Jibu lina uhusiano. Linashughulikia mada kwa uhuru na ubunifu kwa kiasi fulani. Msamiati wa kawaida. Muundo wa kimantiki.",ex:"Mfano: Maandishi yana utangulizi, mwili na hitimisho. Unatumia maneno ya kuunganisha na una maoni yako mwenyewe."},
+      {grade:"6",label:"Daraja 6 – Bora",desc:"Jibu lina uhusiano na ukamilifu. Huru na la ubunifu. Msamiati mpana na tofauti tofauti. Mtiririko unaoendelea.",ex:"Mfano: Maandishi yenye muundo mzuri sana na utangulizi wazi, aya zilizopambwa na hitimisho la kushawishi."}
+    ]}
+  ],
+  tipsTitle:"Vidokezo vya Mtihani",
+  tips:[
+    {n:1,title:"Sehemu 1 – Kusoma: Vidokezo",
+     text:`<p>Sehemu 1 inajaribu kama <strong>unaelewa</strong> maandishi unayosoma. Hujandikia majibu – unabonyeza au kuburuta.</p><ul><li>Soma kila swali <strong>kwa makini</strong> kabla ya kujibu.</li><li>Unaweza kwenda <strong>mbele na nyuma</strong> kati ya maswali.</li><li>Swali ni gumu? <strong>Liruke</strong> na urudi baadaye.</li><li>Jibu lipo daima kwenye maandishi – soma kwa makini.</li></ul>`},
+    {n:2,title:"Sehemu 2 – Upitishaji: Vidokezo",
+     text:`<p>Sehemu 2 inajaribu kama unaweza kuelewa na kupitisha maudhui ya video.</p><ul><li><strong>Tazama na sikiliza video MARA KADHAA.</strong> Unaweza kuisimamisha – tumia fursa hiyo!</li><li>Andika <strong>maneno muhimu (stikkord)</strong> unapotazama.</li><li>Jibu <strong>pointi ZOTE tatu</strong> – usisahau yoyote!</li><li>Pointi 3: <strong>Maoni yako mwenyewe</strong> – unafikiri nini? Mtazamo wako ni upi?</li><li>Andika ~<strong>maneno 150</strong>.</li></ul>`},
+    {n:3,title:"Sehemu 3 – Uandishi: Vidokezo",
+     text:`<p>Sehemu 3 (<strong>40%</strong>) ni muhimu zaidi. Andika maandishi ya kujitegemea na yaliyopangwa.</p><ul><li><strong>Soma kazi zote tatu (A, B, C) kwa makini.</strong> Chagua inayokufaa zaidi.</li><li><strong>Soma kazi uliyochagua tena.</strong> Inauliza nini? Jibu kila kitu kilichoulizwa.</li><li>Panga: andika maneno muhimu na mawazo kwanza.</li><li>Tengeneza <strong>ramani ya akili (tankekart)</strong>: andika mada katikati, chora mistari kwenye maneno muhimu, unganisha mawazo yanayohusiana.</li><li>Gawanya: <strong>utangulizi + mwili (aya 2–3) + hitimisho</strong>.</li><li>Andika ~<strong>maneno 300–700</strong>.</li><li>Simama na <strong>soma tena maandishi yako</strong> (angalia orodha ya ukaguzi).</li></ul>`},
+    {n:4,title:"Maneno ya kazi za mtihani (Kinorwe/Kiingereza)",
+     text:`<p style="margin-bottom:8px">Maneno haya hutumika mara nyingi katika maelekezo ya kazi. <strong>Elewa maana yake!</strong></p>${VERB_TABLE}`},
+    {n:5,title:"Muundo wa Uandishi (Skriveramme)",
+     text:`<p style="margin-bottom:8px">Tumia muundo huu kupanga na kuandika maandishi yako katika Sehemu 2 na 3:</p>${SKRIVERAMME}`},
+    {n:6,title:"Maneno ya Kuunganisha (Bindeord / Linking Words)",
+     text:`<p style="margin-bottom:8px">Anuai matumizi ya maneno ya kuunganisha ili kufanya maandishi yako kuwa <strong>ya mtiririko na mseto</strong>:</p>${BINDEORD_TABLE}`},
+    {n:7,title:"Kuhariri Maandishi – Orodha ya Ukaguzi",
+     text:`<p style="margin-bottom:8px">Simama <strong>unapoandika</strong> na ujiulize maswali haya:</p><ul class="chk-list"><li>Je, maandishi yana <strong>kichwa cha habari na utangulizi</strong>?</li><li>Je, maandishi yamegawanywa katika <strong>aya</strong>? Je, unashikamana na mada moja kwa kila aya?</li><li>Je, kuna <strong>mtiririko na mseto mzuri</strong> kwenye maandishi?</li><li>Je, unatumia <strong>maneno ya kuunganisha</strong>?</li><li>Je, maandishi yana <strong>hitimisho</strong> linalomuhtasari au kufinisha?</li></ul>`}
+  ],
+  faqTitle:"Maswali ya Kawaida",
+  faqs:[
+    {q:"Tofauti kati ya mtihani na tentamen ni nini?",a:"Tentamen ni mtihani wa mazoezi. Alama hazihesabiwi kwenye hati. Ni fursa ya kufanya mazoezi na kujiandaa."},
+    {q:"Siku ya maandalizi ni nini?",a:"Siku ya shule kabla ya mtihani. Nyenzo zinapatikana kuanzia 09:00. Unaweza kushirikiana, kuandika madokezo na kufanya mazoezi. Unaweza kuleta madokezo kwenye mtihani lakini si sehemu ya jibu lako."},
+    {q:"Sehemu tatu za mtihani ni zipi?",a:"Sehemu 1: Kusoma (30%, ~Saa 1.5) – kubonyeza/kuburuta, kiotomatiki. Sehemu 2: Upitishaji (30%, ~Saa 1.5) – tazama video, andika ~maneno 150. Sehemu 3: Uandishi (40%, ~Saa 2) – chagua kazi moja, andika maneno 300–700."},
+    {q:"Je, ninahitaji vipokea sauti?",a:"Ndiyo. Katika Sehemu 2 utatazama na kusikiliza video. Vipokea sauti ni lazima."},
+    {q:"Je, ninaweza kutumia Google Translate?",a:"Hapana. Ni marufuku kabisa kutumia programu za kutafsiri wakati wa mtihani."},
+    {q:"Je, ninaweza kutumia AI?",a:"Hapana. Ni marufuku. Kila unacowasilisha lazima kiwe kazi yako mwenyewe."},
+    {q:"Je, ninaweza kutumia kamusi?",a:"Ndiyo. Kamusi na zana ambazo hazihitaji intaneti zinaruhusiwa."},
+    {q:"Je, ninaweza kutumia simu?",a:"Hapana. Simu ya mkononi hairuhusiwi wakati wa mtihani."},
+    {q:"Ni nani anayekagua mtihani?",a:"Wapima wawili wanatathmini Sehemu 2 na 3. Sehemu 1 ni kiotomatiki."},
+    {q:"Uzito wa kila sehemu ni upi?",a:"Sehemu 1: 30%, Sehemu 2: 30%, Sehemu 3: 40%. Sehemu 3 ni muhimu zaidi."},
+    {q:"Niandike maneno mangapi katika Sehemu 2?",a:"~maneno 150."},
+    {q:"Niandike maneno mangapi katika Sehemu 3?",a:"~maneno 300–700. Chini ya 300 huenda ni kidogo sana."},
+    {q:"Je, ninaweza kuchagua kazi ya Sehemu 3?",a:"Ndiyo. A, B au C. Soma zote tatu na uchague inayokufaa zaidi."},
+    {q:"Je, majibu yangu yanaweza kutunzwa kiotomatiki?",a:"Ndiyo. Majibu huhifadhiwa kiotomatiki. Huhitaji kubonyeza 'save'."},
+    {q:"Ninawasilishaje mtihani?",a:"Bonyeza «LEVER» kisha «AVSLUTT OG LEVER»."}
+  ]
+},
+so:{
+  langName:"Soomaali",dir:"ltr",
+  heroTitle:"ENGV010 – Imtixaanka & Imtixaanka Tababarka",
+  heroDesc:"Macluumaad muhiim ah oo ku saabsan imtixaanka iyo tentamen ee ENGV010 Ingiriisiga Module 4.",
+  tabInfo:"📋 Imtixaanka",tabPrep:"📅 Diyaarinta",tabRules:"⚠️ Xeerarka",tabGrades:"🎯 Derejooyinka",tabTips:"💡 Talooyinka",tabFaq:"❓ Su'aalaha",
+  overviewTitle:"Guudmar Imtixaanka",
+  ovDuration:"5 saac",ovDurationLabel:"Wadarta",ovD1:"Qeybta 1",ovD1Label:"30% · 1.5 saac",ovD2:"Qeybta 2",ovD2Label:"30% · 1.5 saac",ovD3:"Qeybta 3",ovD3Label:"40% · 2 saac",
+  p1Title:"Qeybta 1 – Fahamka Akhrinta",p1Time:"~1.5 saacadood",p1Weight:"30%",
+  p1Desc:`<p>Qeybta 1 waxay tijaabisaa <strong>awooda akhrinta</strong> – awoodaada akhrinta iyo fahamka qoraalada Ingiriisiga.</p><ul><li>Ma <strong>QORAYSID</strong> jawaab gaar ah. Hawlaha waxaa lagu qabaa:<ul><li>Gujinta jawaabta saxda ah</li><li>Gujinta erayada ama jumlada qoraalka ku jira</li><li>Jiidida cutubada si taxane ah</li></ul></li><li>Qeybta 1 waxaa ku jira hawlo <strong>badan</strong> – si fiican u qorsheey waqtigaaga.</li><li>Qeybta 1 waxaa <strong>toos uga xisaabiya</strong> nidaamka. Waxba ma eego sensor.</li><li>Waqtiga la taliyay: ~<strong>1.5 saacadood</strong>.</li></ul>`,
+  p2Title:"Qeybta 2 – Gudbinta Macluumaadka & Xiriirka Qoraalka",p2Time:"~1.5 saacadood",p2Weight:"30%",
+  p2Desc:`<p>Qeybta 2 waxay tijaabisaa haddaad awoodid <strong>gudbinta waxa aad aragtid/maqasho</strong> iyo in aad aragti gaar ah ka bixisid.</p><ul><li>Waxaad <strong>daawanaysaa oo maqlanaysaa</strong> muuqaal – xasuuso dhegahaaga!</li><li>Waxaad <strong>joojin oo dib u bilaabi kartaa</strong> muuqaalka jeer badan.</li><li>Hawsha waxaa ku jira <strong>saddex dhibcood</strong>:<ul><li>Dhibcaha 1 iyo 2: Macluumaadka muuqaalka ku gudbi erayadaada</li><li>Dhibcaha 3: Bixi <strong>aragtidaada gaarka ah</strong></li></ul></li><li>Qor ~<strong>150 eray</strong>.</li><li>Laba baarista ayaa jawaabta kuu qiimeeya.</li></ul>`,
+  p3Title:"Qeybta 3 – Qoraalka",p3Time:"~2 saacadood",p3Weight:"40%",
+  p3Desc:`<p>Qeybta 3 (<strong>40%</strong>) ayaa ugu muhiimsan. Halkan waxaad muujinaysaa awoodaada qorista qoraalada Ingiriisiga oo dhaadheer.</p><ul><li>Waxaad dooranaysaa <strong>mid ka mid ah saddex hawlood</strong> (A, B ama C).</li><li>Waxaad isticmaali kartaa macluumaadka diyaarinta iyo <strong>waayo-aragnimadaada gaarka ah</strong>.</li><li>Laga yaabo inaad loogu yeedho <strong>doodi, xujooyin, ka fikirid</strong> iwm.</li><li>Qor ~<strong>300–700 eray</strong>.</li><li>U qaybi: <strong>hordhac + jidhka ugu weyn (2–3 cutub) + gabagabo</strong>.</li><li>Laba baarista ayaa jawaabta kuu qiimeeya.</li></ul>`,
+  prepTitle:"Maalinta Diyaarinta",
+  prepIntro:"Waxaa jira maalin diyaarineed kahor imtixaankan. Xogta diyaarinta waxaa laga heli karaa <strong>saacadda 09:00</strong>. Waxaad kuu qaadi kartaa xusuus-qorkaaga imtixaanka – laakiin kuma jiraan jawaabta imtixaanka.",
+  prepItems:[
+    {icon:"🤝",title:"Kaashato",desc:"Waxaad la shaqayn kartaa ardayda kale oo aad wax ka dooran kartaa mawduuca waqtiga diyaarinta."},
+    {icon:"📝",title:"Xusuus-qor & khariidadaha maskaxda",desc:"Qor xusuus-qoryo oo samee khariidadaha maskaxda oo ku saabsan mawduuca."},
+    {icon:"🤔",title:"Ka fikirid",desc:"Ka feker waxa aad horeba u taqaan mawduuca iyo waayo-aragnimadaada gaarka ah ee aad isticmaali kartid maalinta imtixaanka."},
+    {icon:"📖",title:"Ku tababar qaamuuska",desc:"Ku tababar isticmaalka qaamuuska iyo agabka kuu banaan imtixaanka."},
+    {icon:"✍️",title:"Ku tababar qaab-dhismeedka qoraalka",desc:"Ku tababar samaynta cinwaanada, cutubada iyo qaab-dhismeed fiican oo leh hordhac, jidhka, iyo gabagabo."},
+    {icon:"💡",title:"Dib u eeg Its Learning",desc:"Eeg hawlihii hore ee Its Learning. Ku tababar qorista Ingiriisiga qaab-dhismeed fiican leh."}
+  ],
+  prepNote:"Macallinku wuxuu kugu hagi karaa waqtiga diyaarinta laakiin ma dhigi karo. Waxa la qiimeeya waa xirfadda aad muujisid <strong>maalinta imtixaanka</strong>.",
+  rulesTitle:"Xeerarka Imtixaanka",
+  allowedTitle:"✅ Waa la ogol yahay",notAllowedTitle:"❌ Looma ogola",
+  allowed:["Qaamuusyada iyo buugaagta (internet la'aanteed)","Qaar ka mid ah agabka online-ka ee dugsiga ansixiyay","Dhegaha (loogu baahanyahay Qeybta 2)","Xusuus-qorkaaga maalinta diyaarinta"],
+  notAllowed:["Barnaamijyada turjumaadda (Google Translate, DeepL)","Taleefanka gacanta iyo qalabka xiriirka","Xasaasiyadda macnaha leh (AI) si loogu sameeyo jawaabaha","Qalabka qorista wadaagta iyo sheekada"],
+  sourcesTitle:"📌 Ilaha",
+  sourcesDesc:"Haddaad isticmaasho macluumaad ka socda internetka, buugaagta ama ilaha kale, WAAJIBAAD AH inaad xusid. Qor magaca qoraaga iyo cinwaanka, ama cinwaanka bogga iyo taariikhda. Jawaabaha imtixaanka waxaa lagu baaraa xadgudubyada.",
+  deliveryTitle:"📤 Gudbinta Imtixaanka",
+  deliveryDesc:"Jawaabaha waxaa si toos ah loo kaydiyaa. Guji «LEVER» ka dibna «AVSLUTT OG LEVER»:",
+  gradesTitle:"Derejooyinka & Qiimeynta",
+  gradeIntro:"Laba baarista ayaa jawaabaha kuu qiimeeya (Qeybta 2 iyo 3). Miisaanku waa 1 ilaa 6. Si aad u hesho ka badan daraja 1, WAAJIBAAD AH inaad xirfad ku muujisid DHAMMAAN saddexda qeyb.",
+  gradeScaleLabel:"Miisaanka derejooyinka:",
+  gradeWarningTitle:"⚠️ Muhiim",
+  gradeWarning:"Hadduu baaristu arkaan farro weyn oo u dhaxaysa habka qorista Qeybta 2 iyo 3 – sida qaybaha u eg inaysan qorin adiga – waxay saameyn kartaa qiimeyntaada. Wax kasta oo aad gudbisid waa inuu ahaa shaqadaada.",
+  gradeSections:[
+    {title:"Qeybta 2 – Maxaa asteysa darejo kasta?",items:[
+      {grade:"2",label:"Darejo 2 – Aasaasi",
+       desc:"Waxaad gudbisaa macluumaadka si fudud. Jawaabtu waa gaaban oo fudud. Qaab-dhismeedku si fiican uma caddajirin.",
+       ex:"Tusaale: Waxaad si fudud u sheegtaa xaqiiqo ka mid ah muuqaalka, laakiin kuma jawaabaysid dhammaan saddexda dhibcood, mana jirto aragtidaada gaarka ah."},
+      {grade:"4",label:"Darejo 4 – Dhexdhexaad fiican",
+       desc:"Waxaad si fiican u gudbisaa macluumaadka. Qaybtan waxaad aragtidaada ku muujisaa. Qaab-dhismeed macquul ah.",
+       ex:"Tusaale: Waxaad ka jawaabaysaa dhammaan saddexda dhibcood oo aragtidaada gaarka ah ku dartay. Qaab-dhismeedku guud ahaan waa cad."},
+      {grade:"6",label:"Darejo 6 – Aad u wanaagsan",
+       desc:"Waxaad si aad u wanaagsan u gudbisaa macluumaadka. Waxaad muujisaa jumlooyin madax-bannaan. Jawaabtu si buuxda ayay uga jawaabaysaa. Qoraalku waa sax.",
+       ex:"Tusaale: Muuqaalka si sax ah oo dhamaystiran ayaad u gudbisaa, dhammaan dhibcaha ku jawaabaysaa aragtiyahaaga, qoraalku si fiican u socda, khaladaad ku yaryara."}
+    ]},
+    {title:"Qeybta 3 – Maxaa asteysa darejo kasta?",items:[
+      {grade:"2",label:"Darejo 2 – Aasaasi",
+       desc:"Jawaabtu waxay xiriir la leedahay qaybtii. Mawduuca sare ayaa lagu wajahaa. Ereybixinta aasaasiga ah. Qayb ka mid ah socod iyo isku xidnaan.",
+       ex:"Tusaale: Waxaad qortaa jumlooyin ku saabsan mawduuca laakiin aan qoto dheer, khaladaad badan, aan qaab-dhismeed cad lahayn."},
+      {grade:"4",label:"Darejo 4 – Dhexdhexaad fiican",
+       desc:"Jawaabtu waxay xiriir la leedahay. Waxay si madax-bannaan oo hal-abuur leh mawduuca uga wajahaysaa. Ereybixin guud. Qaab-dhismeed macquul ah.",
+       ex:"Tusaale: Waxaad qortaa qoraal leh hordhac, jidhka, iyo gabagabo. Waxaad isticmaashaa ereyada xidxidaadka oo aragtiyahaaga gaarka ah ku dartaa."},
+      {grade:"6",label:"Darejo 6 – Aad u wanaagsan",
+       desc:"Jawaabtu waxay xiriir la leedahay oo dhamaystiran. Madax-bannaan oo qiimayn leh. Ereybixin ballaadhan oo kala duwan. Socod joogto ah.",
+       ex:"Tusaale: Qoraal si aad u fiican loo qaab-dhisay leh hordhac cad, cutubyo aad loo horumariyay, iyo gabagabo lagu qanacsanaan karo."}
+    ]}
+  ],
+  tipsTitle:"Talooyinka Imtixaanka",
+  tips:[
+    {n:1,title:"Qeybta 1 – Akhrinta: Talooyinka",
+     text:`<p>Qeybta 1 waxay tijaabisaa haddaad <strong>fahantid</strong> qoraalada. MA QORAYSID – guji ama jiidi.</p><ul><li>Su'aasha kasta <strong>si taxadar leh u akhri</strong> kahor jawaabinta.</li><li>Waxaad u gudbi kartaa <strong>hore iyo dib</strong> u dhexmara su'aalaha.</li><li>Su'aashan adag? <strong>Ka bood oo mar dambe ku noqo</strong>.</li><li>Jawaabtu had iyo jeer waxay ku jirtaa qoraalka – si taxadar leh u akhri.</li></ul>`},
+    {n:2,title:"Qeybta 2 – Gudbinta: Talooyinka",
+     text:`<p>Qeybta 2 waxay tijaabisaa fahamka muuqaalka iyo gudbinta macluumaadkiisa.</p><ul><li><strong>Muuqaalka daawo oo dhegayso DHOWR JEE.</strong> Waxaad joojin kartaa – fursaddan isticmaal!</li><li>Qor <strong>ereyada muhiimka ah</strong> intaad daawanaysid.</li><li>Ka jawaab <strong>DHAMMAAN saddexda dhibcood</strong> – mid haka iloobin!</li><li>Dhibcaha 3: <strong>ARAGTIDAADA GAARKA AH</strong> – maxaad u malaynaysaa? Ra'yigaagu waa maxay?</li><li>Qor ~<strong>150 eray</strong>.</li></ul>`},
+    {n:3,title:"Qeybta 3 – Qorista: Talooyinka",
+     text:`<p>Qeybta 3 (<strong>40%</strong>) ayaa ugu muhiimsan. Qor qoraal madax-bannaan oo la qaab-dhisay.</p><ul><li><strong>Dhammaan saddexda hawlood (A, B, C) si taxadar leh u akhri.</strong> Mid dooro oo kugu habboon.</li><li><strong>Hawsha aad dooratay mar labaad u akhri.</strong> Maxaa loogu baahan yahay? Wax kasta ka jawaab.</li><li>Qorsheynta: erayada muhiimka ah iyo fikradaha hore u qor.</li><li>Samee <strong>khariidadda maskaxda (tankekart)</strong>: mawduuca dhexda ku qor, xariiqo ku xidh fikradaha, fikradaha is-xidha isku xidh.</li><li>U qaybi: <strong>hordhac + jidhka (2–3 cutub) + gabagabo</strong>.</li><li>Qor ~<strong>300–700 eray</strong>.</li><li>Jooji oo <strong>qoraalkaaga mar labaad akri</strong> (liistada hubinta eeg).</li></ul>`},
+    {n:4,title:"Falalka hawlaha imtixaanka (Noorweejiga/Ingiriisiga)",
+     text:`<p style="margin-bottom:8px">Falalkan had iyo jeer waxaa lagu isticmaalaa tilmaamaha hawlaha. <strong>Macnahooda si fiican u faham!</strong></p>${VERB_TABLE}`},
+    {n:5,title:"Qaab-dhismeedka Qoraalka (Skriveramme)",
+     text:`<p style="margin-bottom:8px">Qaab-dhismeedkan isticmaal marka aad qorsheynaysid oo aad qoraysid Qeybta 2 iyo 3:</p>${SKRIVERAMME}`},
+    {n:6,title:"Ereyada Xidxidaadka (Bindeord / Linking Words)",
+     text:`<p style="margin-bottom:8px">Kala duwaanshaha ereyada xidxidaadku wuxuu qoraalkaaga ka dhigaa mid <strong>si fiican u socda oo isku xidhan</strong>:</p>${BINDEORD_TABLE}`},
+    {n:7,title:"Dib u Eegista Qoraalka – Liistada Hubinta",
+     text:`<p style="margin-bottom:8px"><strong>Intaad qoraysid</strong> jooji oo naftagaaga waydiiso su'aalahan:</p><ul class="chk-list"><li>Qoraalka miyuu leeyahay <strong>cinwaan iyo hordhac</strong>?</li><li>Qoraalka miyaa loo qaybin <strong>cutubyo</strong>? Mawduuc kasta cutub kuu sareeye?</li><li>Miyaad qoraalka ku aragtaa <strong>isku xidhnaanta fiican</strong> ee jumlaha iyo cutubada?</li><li>Miyaad isticmaashaa <strong>ereyada xidxidaadka</strong>?</li><li>Qoraalka miyuu leeyahay <strong>gabagabo</strong> oo koobaya ama soo gaba-gabeeya?</li></ul>`}
+  ],
+  faqTitle:"Su'aalaha Caadiga ah",
+  faqs:[
+    {q:"Maxaa u dhexeeya imtixaanka iyo tentamen?",a:"Tentamen waa imtixaan tababar ah. Darajadu LOOMA XISAABIN shahaadada. Waa fursad aad ku tababartid oo aad u diyaargarowtid qaabka imtixaanka."},
+    {q:"Maalinta diyaarinta waa maxay?",a:"Waa maalin dugsiyeed ka hor imtixaanka. Xogtu waxaa laga heli karaa saacadda 09:00. Waxaad kaashanaysaa, xusuus-qor samaysanaysaa, oo ku tababaranaysaa. Waxaad u qaadi kartaa xusuus-qorkaaga imtixaanka laakiin kuma jiraan jawaabta."},
+    {q:"Saddexda qeyb ee imtixaanka waa maxay?",a:"Qeybta 1: Akhrinta (30%, ~1.5 saac) – guji/jiidi, toos. Qeybta 2: Gudbinta (30%, ~1.5 saac) – muuqaal daawow, ~150 eray qor. Qeybta 3: Qoraalka (40%, ~2 saac) – mid ka mid ah saddex hawlood dooro, 300–700 eray."},
+    {q:"Miyaan u baahnahay dhegaha?",a:"Haa. Qeybta 2 waxaad daawanaysaa oo maqalaysaa muuqaal. Dhegaha waa waajib. Xasuuso inaad keento dhegaha iyo charger-ka."},
+    {q:"Miyaan isticmaali karaa Google Translate?",a:"Maya. Waa mamnuuc buuxa isticmaalka barnaamijyada turjumaadda imtixaanka."},
+    {q:"Miyaan isticmaali karaa AI?",a:"Maya. Waa mamnuuc. Wax kasta oo aad gudbisid waa inuu ahaa shaqadaada gaarka ah."},
+    {q:"Miyaan isticmaali karaa qaamuus?",a:"Haa. Qaamuusyada iyo agabka internet u baahan maaha waa la ogol yahay."},
+    {q:"Miyaan isticmaali karaa taleefanka?",a:"Maya. Taleefanka gacanta waa mamnuuc imtixaanka."},
+    {q:"Cidda imtixaanka wax ka qiimeysa?",a:"Laba baarista ayaa Qeybta 2 iyo 3 qiimeeya. Qeybta 1 waxaa si toos ah uga xisaabin nidaamka."},
+    {q:"Miisaanka qeybaha waa maxay?",a:"Qeybta 1: 30%, Qeybta 2: 30%, Qeybta 3: 40%. Qeybta 3 ayaa ugu muhiimsan."},
+    {q:"Qeybta 2 immisa eray?",a:"~150 eray."},
+    {q:"Qeybta 3 immisa eray?",a:"~300–700 eray. Ka yar 300 badanaa ma filna xirfad buuxda muujinta."},
+    {q:"Miyaan dooran karaa hawsha Qeybta 3?",a:"Haa. A, B ama C. Dhammaan saddexda si taxadar leh u akhri oo mid kugu habboon dooro."},
+    {q:"Jawaabaheygu miyaa si toos ah loo kaydinayaa?",a:"Haa. Jawaabaha si toos ah ayaa loo kaydiyaa intaad qoraysid."},
+    {q:"Sideen u gudbiyo imtixaanka?",a:"Guji «LEVER» ka dibna «AVSLUTT OG LEVER»."}
+  ]
+}
+};
+
+let lang='no', activeTab='info';
+function buildLangBar(){const bar=document.getElementById('langBar');bar.innerHTML='';Object.keys(T).forEach(code=>{const btn=document.createElement('button');btn.className='lang-btn'+(code===lang?' active':'');btn.textContent=T[code].langName;btn.onclick=()=>setLang(code);bar.appendChild(btn);});}
+function setLang(code){lang=code;const t=T[code];document.documentElement.lang=code;document.body.classList.toggle('rtl',t.dir==='rtl');document.body.style.direction=t.dir;buildLangBar();renderAll();}
+function gradeColor(g){return{1:'#c0392b',2:'#e67e22',3:'#d4ac0d',4:'#27ae60',5:'#2980b9',6:'#8e44ad'}[parseInt(g)]||'#888';}
+function renderAll(){
+  const t=T[lang];
+  document.getElementById('heroTitle').textContent=t.heroTitle;
+  document.getElementById('heroDesc').textContent=t.heroDesc;
+  renderTabs(t);
+  document.getElementById('overviewTitle').textContent=t.overviewTitle;
+  document.getElementById('overviewGrid').innerHTML='<div class="ov-item"><div class="ov-num">'+t.ovDuration+'</div><div class="ov-label">'+t.ovDurationLabel+'</div></div><div class="ov-item"><div class="ov-num" style="font-size:15px">'+t.ovD1+'</div><div class="ov-label">'+t.ovD1Label+'</div></div><div class="ov-item"><div class="ov-num" style="font-size:15px">'+t.ovD2+'</div><div class="ov-label">'+t.ovD2Label+'</div></div><div class="ov-item"><div class="ov-num" style="font-size:15px">'+t.ovD3+'</div><div class="ov-label">'+t.ovD3Label+'</div></div>';
+  document.getElementById('partsContainer').innerHTML='<div class="part-card p1"><div><div class="part-title">'+t.p1Title+'</div><div class="part-desc">'+t.p1Desc+'</div></div><div class="part-meta"><div class="part-weight">'+t.p1Weight+'</div><div class="part-time">'+t.p1Time+'</div></div></div><div class="part-card p2"><div><div class="part-title">'+t.p2Title+'</div><div class="part-desc">'+t.p2Desc+'</div></div><div class="part-meta"><div class="part-weight" style="background:var(--orange)">'+t.p2Weight+'</div><div class="part-time">'+t.p2Time+'</div></div></div><div class="part-card p3"><div><div class="part-title">'+t.p3Title+'</div><div class="part-desc">'+t.p3Desc+'</div></div><div class="part-meta"><div class="part-weight" style="background:var(--gold);color:var(--navy)">'+t.p3Weight+'</div><div class="part-time">'+t.p3Time+'</div></div></div>';
+  document.getElementById('prepTitle').textContent=t.prepTitle;
+  document.getElementById('prepContainer').innerHTML='<div class="info-box gold" style="margin-bottom:14px"><div class="box-title">⏰ 09:00</div>'+t.prepIntro+'</div><div class="prep-grid">'+t.prepItems.map(function(i){return '<div class="prep-item"><div class="prep-item-icon">'+i.icon+'</div><div class="prep-item-title">'+i.title+'</div><div class="prep-item-desc">'+i.desc+'</div></div>';}).join('')+'</div><div class="info-box purple"><div class="box-title">📌</div>'+t.prepNote+'</div>';
+  document.getElementById('rulesTitle').textContent=t.rulesTitle;
+  document.getElementById('rulesGrid').innerHTML='<div class="rule-box allowed"><div class="rule-box-title">'+t.allowedTitle+'</div><ul class="rule-list">'+t.allowed.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div><div class="rule-box not-allowed"><div class="rule-box-title">'+t.notAllowedTitle+'</div><ul class="rule-list">'+t.notAllowed.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div>';
+  document.getElementById('sourcesBox').innerHTML='<div class="box-title">'+t.sourcesTitle+'</div>'+t.sourcesDesc;
+  document.getElementById('deliveryBox').innerHTML='<div class="box-title">'+t.deliveryTitle+'</div>'+t.deliveryDesc+'<div class="btn-demo"><span class="btn-lever">LEVER &#9655;</span><span class="btn-avslutt">AVSLUTT OG LEVER</span></div>';
+  document.getElementById('gradesTitle').textContent=t.gradesTitle;
+  var gradeScale=[1,2,3,4,5,6].map(function(n){return '<div style="width:40px;height:40px;border-radius:9px;background:'+gradeColor(n)+';display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:'+(n===3?'#333':'#fff')+'">'+n+'</div>';}).join('');
+  document.getElementById('gradesContainer').innerHTML='<p class="grade-intro">'+t.gradeIntro+'</p><div style="margin-bottom:16px"><div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px">'+t.gradeScaleLabel+'</div><div style="display:flex;gap:8px;flex-wrap:wrap">'+gradeScale+'</div></div><div class="info-box warn" style="margin-bottom:18px"><div class="box-title">'+t.gradeWarningTitle+'</div>'+t.gradeWarning+'</div>'+t.gradeSections.map(function(sec){return '<div class="criteria-section"><div class="criteria-section-title">'+sec.title+'</div>'+sec.items.map(function(item){return '<div class="grade-card"><div class="grade-card-header"><div style="width:36px;height:36px;border-radius:8px;background:'+gradeColor(item.grade)+';display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:'+(item.grade==='3'?'#333':'#fff')+';flex-shrink:0">'+item.grade+'</div><div class="grade-card-title">'+item.label+'</div></div><div style="font-size:13px;color:#445;line-height:1.65">'+item.desc+'</div>'+(item.ex?'<div class="grade-ex">📝 '+item.ex+'</div>':'')+'</div>';}).join('')+'</div>';}).join('');
+  document.getElementById('tipsTitle').textContent=t.tipsTitle;
+  document.getElementById('tipsContainer').innerHTML=t.tips.map(function(tip){return '<div class="tip-card"><div class="tip-card-title"><div class="tip-number">'+tip.n+'</div>'+tip.title+'</div><div class="tip-text">'+tip.text+'</div></div>';}).join('');
+  document.getElementById('faqTitle').textContent=t.faqTitle;
+  document.getElementById('faqContainer').innerHTML=t.faqs.map(function(faq){return '<div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span>'+faq.q+'</span><span class="faq-arrow">&#9660;</span></button><div class="faq-a">'+faq.a+'</div></div>';}).join('');
+}
+function renderTabs(t){var tabs=[{id:'info',label:t.tabInfo},{id:'prep',label:t.tabPrep},{id:'rules',label:t.tabRules},{id:'grades',label:t.tabGrades},{id:'tips',label:t.tabTips},{id:'faq',label:t.tabFaq}];document.getElementById('tabsBar').innerHTML=tabs.map(function(tab){return '<button class="tab-btn'+(activeTab===tab.id?' active':'')+'" onclick="switchTab(\''+tab.id+'\')">'+tab.label+'</button>';}).join('');}
+function switchTab(tabId){activeTab=tabId;document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});document.getElementById('panel-'+tabId).classList.add('active');renderTabs(T[lang]);window.scrollTo({top:0,behavior:'smooth'});}
+function toggleFaq(btn){var ans=btn.nextElementSibling;var isOpen=btn.classList.contains('open');document.querySelectorAll('.faq-q.open').forEach(function(b){b.classList.remove('open');b.nextElementSibling.classList.remove('open');});if(!isOpen){btn.classList.add('open');ans.classList.add('open');}}
+buildLangBar();
+renderAll();
+</script></body></html>
